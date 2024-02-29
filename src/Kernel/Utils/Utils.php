@@ -8,7 +8,7 @@ abstract class Utils
     public static function isPrimitiveFromString(string $type): bool
     {
         return match ($type) {
-            'string', 'int', 'float', 'bool', 'array', 'object', 'null' => true,
+            'string', 'int', 'float', 'bool', 'array', 'null' => true,
             default => false,
         };
     }
@@ -25,8 +25,4 @@ abstract class Utils
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    public static function check($chaineDeCharacter) {
-        // je la traite et le la rend
-        return $chaineDeCharacter;
-    }
 }

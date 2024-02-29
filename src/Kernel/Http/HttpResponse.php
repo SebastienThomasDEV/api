@@ -4,7 +4,7 @@ namespace Mvc\Framework\Kernel\Http;
 
 abstract class HttpResponse
 {
-    public function __construct(private string $content = '', private int $status = 200, private array $headers = [])
+    public function __construct(private string $content = '', private int $status = 200)
     {}
 
     public final function send(): void
@@ -15,10 +15,7 @@ abstract class HttpResponse
         header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        foreach ($this->headers as $name => $value) {
-            header("$name: $value");
-        }
-        echo $this->content;
+        print $this->content;
     }
 
     public final function setContent(string $content): void
@@ -30,11 +27,5 @@ abstract class HttpResponse
     {
         $this->status = $status;
     }
-
-    public final function setHeader(string $name, string $value): void
-    {
-        $this->headers[$name] = $value;
-    }
-
 
 }

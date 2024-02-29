@@ -2,7 +2,7 @@
 
 namespace Mvc\Framework\Kernel\Attributes;
 
-use Mvc\Framework\Kernel\Classes\ResourceEndpoint;
+use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS)]
 class ApiResource

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel;
+namespace Mvc\Framework\Kernel\Exception;
 
 use Mvc\Framework\Kernel\Http\JsonResponse;
 
@@ -13,8 +13,9 @@ class ExceptionManager
             'message' => $e->getMessage(),
             'code' => $e->getCode()
         ];
-        $response = new JsonResponse($vars, 500, ['Content-Type' => 'application/json']);
+        $response = new JsonResponse($vars, 500);
         $response->send();
+        die();
     }
 
 }

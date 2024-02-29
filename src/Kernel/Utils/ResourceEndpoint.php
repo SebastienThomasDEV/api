@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Classes;
+namespace Mvc\Framework\Kernel\Utils;
 
 class ResourceEndpoint
 {

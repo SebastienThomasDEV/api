@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Utils;
+namespace Mvc\Framework\Kernel\Services;
 
 class Request
 {

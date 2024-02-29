@@ -1,5 +1,5 @@
 <?php
-namespace Mvc\Framework\Kernel\Utils;
+namespace Mvc\Framework\Kernel\Services;
 class Serializer{
        public function serialize(mixed $entity): array
        {

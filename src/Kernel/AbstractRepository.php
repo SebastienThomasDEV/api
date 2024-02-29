@@ -95,4 +95,55 @@ class AbstractRepository
             return Model::getInstance()->query($sql, $criteria);
     }
 
+    public final function findOneBy(array $criteria): array
+    {
+        $sql = "SELECT * FROM $this->entity WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= "$key = :$key AND ";
+        }
+        $sql = substr($sql, 0, -4);
+        return Model::getInstance()->query($sql, $criteria);
+    }
+
+    public final function findByLike(array $criteria): array
+    {
+        $sql = "SELECT * FROM $this->entity WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= "$key LIKE :$key AND ";
+        }
+        $sql = substr($sql, 0, -4);
+        return Model::getInstance()->query($sql, $criteria);
+    }
+
+    public final function findOneByLike(array $criteria): array
+    {
+        $sql = "SELECT * FROM $this->entity WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= "$key LIKE :$key AND ";
+        }
+        $sql = substr($sql, 0, -4);
+        return Model::getInstance()->query($sql, $criteria);
+    }
+
+    public final function findByBetween(array $criteria): array
+    {
+        $sql = "SELECT * FROM $this->entity WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= "$key BETWEEN :$key AND ";
+        }
+        $sql = substr($sql, 0, -4);
+        return Model::getInstance()->query($sql, $criteria);
+    }
+
+    public final function findOneByBetween(array $criteria): array
+    {
+        $sql = "SELECT * FROM $this->entity WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= "$key BETWEEN :$key AND ";
+        }
+        $sql = substr($sql, 0, -4);
+        return Model::getInstance()->query($sql, $criteria);
+    }
+
+
 }

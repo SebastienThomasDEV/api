@@ -2,7 +2,6 @@
 
 namespace Mvc\Framework\Kernel;
 use Mvc\Framework\Kernel\Http\JsonResponse;
-use Mvc\Framework\Kernel\Http\Response;
 
 class AbstractController
 {
