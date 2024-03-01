@@ -15,7 +15,7 @@ class ExceptionManager
         ];
         $response = new JsonResponse($vars, 500);
         $response->send();
-        die();
+        exit();
     }
 
 }

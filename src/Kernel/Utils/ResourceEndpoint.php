@@ -2,12 +2,12 @@
 
 namespace Mvc\Framework\Kernel\Utils;
 
-class ResourceEndpoint
+abstract class ResourceEndpoint
 {
-    private int $identifier;
+    protected ?int $identifier = null;
     public function __construct(
         private readonly string $path,
-        private bool $protected = false
+        private readonly bool $protected = false
     ){}
 
     public final function getPath(): string
@@ -21,10 +21,7 @@ class ResourceEndpoint
         return $this->protected;
     }
 
-    public function execute(): void
-    {
-        echo "Executing the endpoint";
-    }
+    protected function execute(): void{}
 
 
 

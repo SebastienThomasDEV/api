@@ -27,7 +27,7 @@ class Kernel
     // pour appeler cette méthode, on utilise le nom de la classe suivi de deux points et de la méthode getInstance
     // par exemple : Kernel::getInstance()
     // vu que qu'on appelle cette methode et cette methode est static, on ne peut pas utiliser $this
-    // on utilise donc self:: pour accéder à la propriété $instance
+    // on utilise donc self:: pour accéder à la propriété $instance de la classe Kernel
     public static final function getInstance(): ?Kernel
     {
         if (self::$instance === null) {
@@ -68,7 +68,7 @@ class Kernel
     }
 
 
-    // on créé une methode que je nomme registerRoutes qui va charger les routes de notre application
+    // on crée une methode que je nomme registerRoutes qui va charger les routes de notre application
     // pour cela, on appelle la méthode statique registerControllerEndpoints de notre classe ApiRouter
     // qui va charger les routes des contrôleurs de notre application
     // puis on appelle la méthode statique registerResourceEndpoints de notre classe ApiRouter
@@ -81,7 +81,7 @@ class Kernel
     }
 
 
-    // on créé une methode que je nomme loadRequestedRoute qui va charger la route demandée par l'utilisateur
+    // on crée une methode que je nomme loadRequestedRoute qui va charger la route demandée par l'utilisateur
     // pour cela, on appelle la méthode statique load de notre classe ApiRouter
     // qui va charger la route demandée par l'utilisateur en fonction de l'URL demandée
     // si la route demandée n'existe pas, la méthode load de notre classe ApiRouter va renvoyer une erreur 404

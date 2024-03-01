@@ -133,8 +133,9 @@ class ApiRouter
             }
         }
         closedir($dir);
+                            dd(self::$resources);
     }
-    public static function load(): void
+    private static function load(): void
     {
         $endpointFound = null;
         foreach (self::$controllerEndpoints as $endpoint) {

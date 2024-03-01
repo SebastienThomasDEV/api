@@ -2,10 +2,10 @@
 
 // ce fichier index.php est le point d'entrée de notre application
 // c'est lui qui va être appelé par le serveur web
-// qu'importe l'adresse demandée par l'utilisateur (URL), c'est ce fichier qui sera appelé
+// qu'importe l'adresse demandée par l'utilisateur (URL), c'est ce fichier qui sera exécuté
+// on utilise le fichier .htaccess pour rediriger toutes les requêtes vers ce fichier
 // c'est donc ici que l'on va instancier notre application et lancer le processus de traitement de la requête
-// on utilise le fichier .htaccess pour rediriger toutes les requêtes vers ce fichier index.php
-// on active le mode réécriture d'URL dans le fichier .htaccess pour que l'URL soit plus jolie et plus simple à lire
+// on active le module réécriture d'URL dans le fichier .htaccess pour que l'URL soit plus jolie et plus simple à lire
 
 // on inclut le fichier autoload.php généré par composer
 // il permet de charger toutes les classes de notre application

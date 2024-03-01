@@ -6,7 +6,7 @@ use \PDO;
 
 class Model
 {
-    private static $instance = null;
+    private static ?Model $instance = null;
     private \PDO $pdo;
 
     private function __construct()
@@ -21,7 +21,7 @@ class Model
             $this->pdo->exec("SET CHARACTER SET utf8");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
-            echo 'Connexion échouée : ' . $e->getMessage();
+            echo 'Connexion échouée avec la basse de donné : ' . $e->getMessage();
         }
     }
 
@@ -33,11 +33,48 @@ class Model
         return self::$instance;
     }
 
-    public final function query(string $sql, array $params = []): array
+    public function get(string $table, int $id): array
     {
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id");
+        $query->execute(['id' => $id]);
+        return $query->fetch(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
     }
+
+    public function getAll(string $table): array
+    {
+        $query = $this->pdo->prepare("SELECT * FROM $table");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function create(string $table, array $data): void
+    {
+        $columns = implode(', ', array_keys($data));
+        $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
+        $query = $this->pdo->prepare("INSERT INTO $table ($columns) VALUES ($values)");
+        $query->execute($data);
+    }
+
+    public function update(string $table, int $id, array $data): void
+    {
+        $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
+        $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
+        $query->execute(array_merge($data, ['id' => $id]));
+    }
+
+    public function delete(string $table, int $id): void
+    {
+        $query = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
+        $query->execute(['id' => $id]);
+    }
+
+    public function patch(string $table, int $id, array $data): void
+    {
+        $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
+        $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
+        $query->execute(array_merge($data, ['id' => $id]));
+    }
+
+
 
 }

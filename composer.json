@@ -1,9 +1,9 @@
 {
-  "name": "mvc/framework",
+  "name": "api/framework",
   "type": "project",
   "autoload": {
     "psr-4": {
-      "Mvc\\Framework\\": "src/"
+      "Api\\Framework\\": "src/"
     }
   },
   "minimum-stability": "stable",
