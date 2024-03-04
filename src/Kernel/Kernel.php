@@ -88,7 +88,7 @@ class Kernel
     private function loadRequestedRoute(): void
     {
         try {
-            ApiRouter::load(); // on charge la route demandée par l'utilisateur
+            ApiRouter::loadEndpoint(); // on charge la route demandée par l'utilisateur
         } catch (\Throwable $e) {
             Exception\ExceptionManager::send($e); // si une erreur survient, on l'envoie à notre gestionnaire d'exceptions
         }

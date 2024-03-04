@@ -3,7 +3,7 @@
 namespace Mvc\Framework\Kernel;
 use Mvc\Framework\Kernel\Http\JsonResponse;
 
-class AbstractController
+abstract class AbstractController
 {
     /**
      * send a JSON response to the client with the given data as an array

@@ -80,27 +80,84 @@ class ApiRouter
                         // vous pouvez l'injecter dans les paramètres de votre méthode pour l'utiliser
                         // ce service sera instancié automatiquement par notre conteneur de services (DependencyResolver.php)
                         // qui utilise lui aussi le système de réflexion de PHP
+                        // à l'appel de la méthode contenue dans ma classe controller
+                        // je vais pouvoir lui passer des paramètres dynamiquement
                         $parameters = $method->getParameters();
-                        // je boucle sur les attributs de ma méthode
+                        // je boucle sur les attributs de ma méthode pour récupérer les attributs de type Endpoint
+                        // car de base, je ne sais pas si ma méthode contient un attribut de type Endpoint
                         foreach ($attributes as $attribute) {
                             // je vérifie si l'attribut de ma méthode est de type Endpoint
                             if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\Endpoint') {
                                 // si c'est le cas, je crée une instance de mon attribut Endpoint
                                 $endpoint = $attribute->newInstance();
-                                // je set le controller de mon endpoint avec le chemin de mon fichier
+                                // j'associe le chemin de mon controller à mon endpoint pour pouvoir le retrouver plus tard
                                 $endpoint->setController($file_path);
-                                // je set la méthode de mon endpoint avec le nom de ma méthode
+                                // j'associe la méthode de mon controller à mon endpoint pour pouvoir l'appeler plus tard
                                 $endpoint->setMethod($method->getName());
-                                // je boucle sur les paramètres de ma méthode
+                                // je boucle sur les paramètres de ma méthode pour récupérer les types des paramètres
+                                // car si le type du paramètre n'est pas un type primitif (int, string, bool, etc.)
+                                // c'est que c'est un service ou un repository que je dois instancier pour l'injecter dans ma méthode
                                 foreach ($parameters as $parameter) {
-                                    // je vérifie si le type du paramètre n'est pas un type primitif
+                                    // je vérifie donc si le type du paramètre n'est pas un type primitif
                                     if (!Utils::isPrimitiveFromString($parameter->getType())) {
+                                        // si c'est le cas, je stocke le nom du paramètre et son type dans mon endpoint
                                         $endpoint->setParameter($parameter->getName(), $parameter->getType());
                                     }
                                 }
-                                // je stocke mon endpoint dans un tableau
+                                // Pour finir, je stocke mon endpoint dans mon tableau de endpoints
                                 self::$controllerEndpoints[] = $endpoint;
                             }
+                        }
+                    }
+                    // je rattrape les exceptions qui peuvent être levées par la classe ReflectionClass
+                } catch (\ReflectionException $e) {
+                    // j'appelle la méthode send de la classe ExceptionManager pour envoyer une exception
+                    // qui est une classe qui permet de gérer les exceptions de notre application crée dans le dossier Kernel/Exception
+                    ExceptionManager::send(new \Exception($e->getMessage(), $e->getCode()));
+                }
+            }
+        }
+        // je ferme le dossier Controller de mon application
+        // avec la fonction closedir de PHP qui permet de fermer un dossier
+        // cela permet de libérer les ressources utilisées par le dossier et éviter des fuites de mémoire
+        closedir($dir);
+    }
+
+
+    // on déclare une méthode statique et publique pour enregistrer les resources de nos entités
+    // dans cette méthode, on va parcourir le dossier Entity de notre application pour lire les fichiers qu'il contient
+    // car chaque fichier correspond à une entité si on respecte la convention de nommage (NomDeL'Entité.php)
+    // grace à la classe ReflectionClass, on va lire les metadonnées de nos classes pour récupérer les attributs de type ApiResource
+    // si on trouve un attribut de type ApiResource
+    // on va appeler la méthode buildEndpoints de notre resource pour générer les routes de l'API associées à notre entité
+    // exemple: si on a une entité Utilisateur, on va générer les routes de l'API pour cette entité (GET /utilisateurs, POST /utilisateurs, etc.)
+    public static function registerResourceEndpoints(): void {
+        // j'ouvre le dossier Entity de mon application pour lire les fichiers qu'il contient (les entités)
+        $dir = opendir(__DIR__ . '/../../src/App/Entity');
+        // je fait une boucle "tant que" pour parcourir les fichiers du dossier Entity
+        while ($file_path = readdir($dir)) {
+            // Encore une fois, je vérifie si le fichier n'est pas un dossier (.) ou (..) car readdir lit aussi les dossiers
+            if ($file_path !== '.' && $file_path !== '..') {
+                // je remplace l'extension .php de mon fichier par une chaine vide
+                $className = str_replace('.php', '', $file_path);
+                // je concatène le namespace de mon entity avec le nom de la classe
+                $file_path = 'Mvc\\Framework\\App\\Entity\\' . $className;
+                try {
+                    // en utilisant le namespace complet de ma classe, je crée une instance de la classe ReflectionClass
+                    $class = new \ReflectionClass($file_path);
+                    // je récupère les attributs de ma classe
+                    $attributes = $class->getAttributes();
+                    // je boucle sur les attributs de ma classe pour récupérer les attributs de type ApiResource
+                    foreach ($attributes as $attribute) {
+                        // je vérifie si l'attribut de ma classe est de type ApiResource
+                        if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\ApiResource') {
+                            // si c'est le cas, je crée une instance de mon attribut ApiResource
+                            $resource = $attribute->newInstance();
+                            // j'appelle la méthode buildEndpoints de ma resource pour générer les routes de l'API associées à mon entité
+                            $resource->buildEndpoints($className);
+                            // je stocke les routes de l'API associées à mon entité dans mon tableau de resources qui me servira plus tard
+                            // je bouclerais sur ce tableau pour rediriger la requête de l'utilisateur vers l'endpoint correspondant
+                            self::$resources[$className] = $resource->getResourceEndpoints();
                         }
                     }
                 } catch (\ReflectionException $e) {
@@ -111,33 +168,16 @@ class ApiRouter
         closedir($dir);
     }
 
-    public static function registerResourceEndpoints(): void {
-        $dir = opendir(__DIR__ . '/../../src/App/Entity');
-        while ($file_path = readdir($dir)) {
-            if ($file_path !== '.' && $file_path !== '..') {
-                $className = str_replace('.php', '', $file_path);
-                $file_path = 'Mvc\\Framework\\App\\Entity\\' . $className;
-                try {
-                    $class = new \ReflectionClass($file_path);
-                    $attributes = $class->getAttributes();
-                    foreach ($attributes as $attribute) {
-                        if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\ApiResource') {
-                            $resource = $attribute->newInstance();
-                            $resource->buildEndpoints($className);
-                            self::$resources[$className] = $resource->getResourceEndpoints();
-                        }
-                    }
-                } catch (\ReflectionException $e) {
-                    ExceptionManager::send(new \Exception($e->getMessage(), $e->getCode()));
-                }
-            }
-        }
-        closedir($dir);
-                            dd(self::$resources);
-    }
-    private static function load(): void
+    // on déclare une méthode statique et publique pour charger l'endpoint correspondant à la requête de l'utilisateur
+    // dans cette méthode, on va parcourir notre tableau de endpoints pour trouver l'endpoint correspondant à la requête de l'utilisateur
+    // si on trouve l'endpoint correspondant, on va instancier le contrôleur associé et appeler la méthode associée
+    // si on ne trouve pas l'endpoint correspondant, on envoie une exception pour signaler que l'endpoint n'a pas été trouvé
+    public static function loadEndpoint(): void
     {
+        // je déclare une variable pour stocker l'endpoint correspondant à la requête de l'utilisateur
+        // elle est initialisée à null car je ne sais pas si je vais trouver l'endpoint correspondant
         $endpointFound = null;
+
         foreach (self::$controllerEndpoints as $endpoint) {
             if ($endpoint->getPath() === Utils::getUrn()) {
                 if ($endpoint->getRequestMethod() === Utils::getRequestedMethod()) {
