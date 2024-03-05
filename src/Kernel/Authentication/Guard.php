@@ -7,23 +7,9 @@ use Mvc\Framework\App\Repository\UtilisateurRepository;
 class Guard {
     public static function check(): bool
     {
-        try{
-            $decodedToken = JwtManager::decodeToken(self::getToken());
-        }
-        catch(\Exception $exception){
-            return false;
-        }
-
-        $idUser = $decodedToken["id"];
-        $repo = new ;
-        $user= $repo->find($idUser);
-         
-        if(count($user)>0){
-         
-            return true;
-        }
+        // TODO: Implement check() method.
+        $token = self::getToken();
         return false;
-       
     }
 
     public static function getToken() : string

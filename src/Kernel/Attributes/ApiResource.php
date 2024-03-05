@@ -2,11 +2,12 @@
 
 namespace Mvc\Framework\Kernel\Attributes;
 
+
 use Mvc\Framework\Kernel\Http\Methods\Delete;
 use Mvc\Framework\Kernel\Http\Methods\Get;
+use Mvc\Framework\Kernel\Http\Methods\GetCollection;
 use Mvc\Framework\Kernel\Http\Methods\Post;
 use Mvc\Framework\Kernel\Http\Methods\Put;
-use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS)]
 class ApiResource
@@ -23,12 +24,12 @@ class ApiResource
         $resourceName = strtolower($resourceName) . 's';
         $this->resourceEndpoints = [
             'GET' => [
-                new Get(path: "/$resourceName"),
-                new Get(path: "/$resourceName/"),
+                new Get(resource: $resourceName),
+                new GetCollection(resource: $resourceName),
             ],
-            'POST' => new Post(path: "/$resourceName"),
-            'PUT' => new Put(path: "/$resourceName/{id}"),
-            'DELETE' => new Delete(path: "/$resourceName/{id}"),
+            'POST' => new Post(resource: $resourceName),
+            'PUT' => new Put(resource: $resourceName),
+            'DELETE' => new Delete(resource: $resourceName),
         ];
     }
 

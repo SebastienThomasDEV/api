@@ -11,14 +11,9 @@
 // il permet de charger toutes les classes de notre application
 // sans avoir à les inclure une par une dans nos fichiers
 // on peut donc utiliser les classes de notre application sans se soucier de leur emplacement
-include_once('vendor/autoload.php');
+include_once(dirname(__DIR__).'/vendor/autoload.php');
 use Mvc\Framework\Kernel\Kernel;
 use Mvc\Framework\Kernel\Exception\ExceptionManager;
-
-// on active l'affichage des erreurs pour faciliter le débogage grace à la fonction error_reporting
-// elle permet d'afficher toutes les erreurs PHP
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 // on instancie notre classe Kernel qui est le point d'entrée de notre application MVC
 // c'est lui qui va charger les variables d'environnement et les routes de notre application puis traite la requête de l'utilisateur

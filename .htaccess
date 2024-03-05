@@ -4,25 +4,16 @@
   # uncomment the following line, if you are having trouble
   # getting no_script_name to work
 #  RewriteBase /
-
-  # we skip all files with .something
-  #RewriteCond %{REQUEST_URI} \..+$
-  #RewriteCond %{REQUEST_URI} !\.html$
-  #RewriteRule .* - [L]
-
-  # we check if the .html version is here (caching)
-  RewriteRule ^$ index.html [QSA]
-  RewriteRule ^([^.]+)$ $1.html [QSA]
-  RewriteCond %{REQUEST_FILENAME} !-f
+# if the request is a file, then redirect to the index.php
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^(.*)$ public/index.php [QSA,L]
 
   # no, so we redirect to our front web controller
-  RewriteRule ^(.*)$ index.php [QSA,L]
+  RewriteRule ^(.*)$ public/index.php [QSA,L]
 
   # if the request is a directory, then redirect to the index.php except public directory
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ index.php [QSA,L]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} !^/public/
+  RewriteRule ^(.*)$ public/index.php [QSA,L]
 
-
-    # if the request is a file, then redirect to the index.php
 </IfModule>

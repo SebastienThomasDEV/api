@@ -2,19 +2,20 @@
 
 namespace Mvc\Framework\Kernel\Http\Methods;
 
+use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 
 class Get extends ResourceEndpoint
 {
 
-    public function __construct(string $path, bool $protected = false)
+    public function __construct(string $resource, bool $protected = false)
     {
-        parent::__construct($path, $protected);
+        parent::__construct($resource, $protected);
+        $this->path = $this->path . '/{id}';
     }
 
-    protected function execute(): void
+    public final function execute(array $vars, int $id = null): array | object
     {
-        echo "Executing GET method";
+        return Model::getInstance()->get($this->getResource(), $id);
     }
-
 }

@@ -25,4 +25,9 @@ abstract class Utils
         return $_SERVER['REQUEST_METHOD'];
     }
 
+    public static function sanitize(string $input): string
+    {
+        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+    }
+
 }

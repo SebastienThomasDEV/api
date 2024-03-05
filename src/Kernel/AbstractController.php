@@ -3,6 +3,12 @@
 namespace Mvc\Framework\Kernel;
 use Mvc\Framework\Kernel\Http\JsonResponse;
 
+
+// Cette classe abstraite est utilisée pour les classes Controller de l'application.
+// Elle permet de factoriser le code des classes Controller.
+// Elle possède une méthode send qui permet d'envoyer une réponse JSON au client.
+// Cette méthode est final pour éviter qu'elle soit redéfinie dans les classes qui l'étendent.
+// Elle utilise la classe JsonResponse pour envoyer une réponse JSON au client. (voir le fichier JsonResponse.php)
 abstract class AbstractController
 {
     /**
@@ -14,14 +20,14 @@ abstract class AbstractController
     public final function send(array $vars): void
     {
         try {
-            $response = new JsonResponse($vars, 200, ['Content-Type' => 'application/json']);
+            $response = new JsonResponse($vars, 200);
             $response->send();
         } catch (\Exception $e) {
             $vars = [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode()
             ];
-            $response = new JsonResponse($vars, 500, ['Content-Type' => 'application/json']);
+            $response = new JsonResponse($vars, 500);
             $response->send();
         }
     }

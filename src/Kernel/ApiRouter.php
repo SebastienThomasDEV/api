@@ -177,34 +177,68 @@ class ApiRouter
         // je déclare une variable pour stocker l'endpoint correspondant à la requête de l'utilisateur
         // elle est initialisée à null car je ne sais pas si je vais trouver l'endpoint correspondant
         $endpointFound = null;
-
+        // je boucle sur mon tableau de endpoints pour trouver l'endpoint correspondant à la requête de l'utilisateur
         foreach (self::$controllerEndpoints as $endpoint) {
+            // je vérifie si le chemin de mon endpoint correspond à la requête de l'utilisateur
+            // exemple: si l'utilisateur demande /utilisateurs, je vérifie si mon endpoint correspond à /utilisateurs
             if ($endpoint->getPath() === Utils::getUrn()) {
+                // je vérifie si la méthode de mon endpoint correspond à la méthode de la requête de l'utilisateur
                 if ($endpoint->getRequestMethod() === Utils::getRequestedMethod()) {
+                    // je vérifie si mon endpoint est protégé par un token
                     if ($endpoint->isProtected()) {
+                        // si c'est le cas, je vérifie si le token de l'utilisateur est valide
+                        // via la classe Guard qui est une classe qui permet de gérer l'authentification de notre application
                         if (Guard::check()) {
+                            // si le token est valide, je stocke mon endpoint dans ma variable
                             $endpointFound = $endpoint;
                         } else {
+                            // si le token n'est pas valide, j'envoie une exception pour signaler que l'accès est non autorisé
                             ExceptionManager::send(new \Exception('Unauthorized access, invalid token', 401));
                         }
                     } else {
+                        // si mon endpoint n'est pas protégé par un token, je stocke mon endpoint dans ma variable
                         $endpointFound = $endpoint;
                     }
                 } else {
+                    // si la méthode de la requête de l'utilisateur ne correspond pas à la méthode de mon endpoint
+                    // exemple: si l'utilisateur demande /utilisateurs avec la méthode POST, mais mon endpoint est en GET
+                    // j'envoie une exception pour signaler que la méthode n'est pas autorisée
                     ExceptionManager::send(new \Exception('Method not allowed for this endpoint', 405));
                 }
             }
         }
         if (!$endpointFound) {
+            foreach (self::$resources as $resource) {
+                foreach ($resource as $endpoint) {
+                    dd($endpoint);
+                }
+            }
             ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
         } else {
+            // si je trouve l'endpoint correspondant à la requête de l'utilisateur
             if (class_exists($endpointFound->getController())) {
+                // je vérifie si le contrôleur associé à mon endpoint existe
+                // si c'est le cas, j'instancie mon contrôleur et j'appelle la méthode associée
                 $controller = new \ReflectionClass($endpointFound->getController());
                 try {
+                    // je crée une instance de mon contrôleur
                     $controller = $controller->newInstance();
+                    // je vérifie si la méthode associée à mon endpoint existe
+                    // si c'est le cas, j'appelle la méthode associée à mon contrôleur
                     if (method_exists($controller, $endpointFound->getMethod())) {
+                        // je stocke la méthode associée à mon endpoint dans une variable
                         $method = $endpointFound->getMethod();
+                        // j'utilise ma classe DependencyResolver pour instancier les services associés à ma méthode
+                        // cette classe utilise le système de réflexion de PHP pour instancier les services associés à ma méthode
+                        // et les injecter dans les paramètres de ma méthode (Voir DependencyResolver.php)
                         $services = DependencyResolver::resolve($endpointFound->getParameters());
+                        // j'appelle la méthode associée à mon endpoint avec les services associés
+                        // l'opérateur de décomposition (...) permet de passer un tableau de paramètres à une méthode
+                        // cela permet de passer des paramètres dynamiquement à une méthode
+                        // exemple: $controller->$method($service1, $service2, $service3, etc.)
+                        // car je ne sais pas combien de services je vais instancier pour ma méthode de mon contrôleur
+                        // cela me permet de passer les services associés à ma méthode dynamiquement
+                        // et pouvoir les utiliser dans ma méthode
                         $controller->$method(...$services);
                     }
                 } catch (\ReflectionException $e) {

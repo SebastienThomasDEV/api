@@ -5,8 +5,8 @@ namespace Mvc\Framework\Kernel\Services;
 class Request
 {
 
-    public array $get;
-    public array $post;
+    private array $get;
+    private array $post;
 
 
     public function __construct()

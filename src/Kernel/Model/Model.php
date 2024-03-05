@@ -33,21 +33,21 @@ class Model
         return self::$instance;
     }
 
-    public function get(string $table, int $id): array
+    public final function get(string $table, int $id): array
     {
         $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id");
         $query->execute(['id' => $id]);
         return $query->fetch(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
     }
 
-    public function getAll(string $table): array
+    public final function getAll(string $table): array
     {
         $query = $this->pdo->prepare("SELECT * FROM $table");
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
     }
 
-    public function create(string $table, array $data): void
+    public final function create(string $table, array $data): void
     {
         $columns = implode(', ', array_keys($data));
         $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
@@ -55,20 +55,20 @@ class Model
         $query->execute($data);
     }
 
-    public function update(string $table, int $id, array $data): void
+    public final function update(string $table, int $id, array $data): void
     {
         $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
         $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
         $query->execute(array_merge($data, ['id' => $id]));
     }
 
-    public function delete(string $table, int $id): void
+    public final function delete(string $table, int $id): void
     {
         $query = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
         $query->execute(['id' => $id]);
     }
 
-    public function patch(string $table, int $id, array $data): void
+    public final function patch(string $table, int $id, array $data): void
     {
         $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
         $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
