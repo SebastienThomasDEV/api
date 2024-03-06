@@ -11,12 +11,7 @@ namespace Mvc\Framework\Kernel\Http;
 // on utilise la fonction json_encode pour convertir les données en JSON
 class JsonResponse
 {
-    public function __construct(private array $data = [], private int $status = 200)
-    {
-
-    }
-
-    public final function send(): void
+    public function __construct(private array|object $data = [], private int $status = 200)
     {
         http_response_code($this->status);
         header('Access-Control-Allow-Headers: Content-Type'); // on autorise le type de contenu de la requête
@@ -26,6 +21,7 @@ class JsonResponse
         header('Access-Control-Max-Age: 3600'); // on définit la durée de validité de la réponse en secondes
         header('Access-Control-Allow-Credentials: true'); // on autorise les requêtes avec des cookies
         print json_encode($this->data); // on envoie les données au client
+        exit();
     }
 
 }

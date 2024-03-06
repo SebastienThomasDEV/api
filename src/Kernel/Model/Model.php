@@ -33,11 +33,11 @@ class Model
         return self::$instance;
     }
 
-    public final function get(string $table, int $id): array
+    public final function get(string $table, int $id): object
     {
-        $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id");
+        $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id LIMIT 1");
         $query->execute(['id' => $id]);
-        return $query->fetch(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
+        return $query->fetchAll(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table))[0];
     }
 
     public final function getAll(string $table): array

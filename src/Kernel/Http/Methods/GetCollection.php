@@ -2,19 +2,22 @@
 
 namespace Mvc\Framework\Kernel\Http\Methods;
 
+use Mvc\Framework\Kernel\Http\JsonResponse;
 use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 
 class GetCollection extends ResourceEndpoint
 {
     public function __construct(
-        private string $resource
+        string $resource,
+        bool $protected = false
     ) {
-        parent::__construct($this->resource, 'GET');
+        parent::__construct($resource, $protected);
+        $this->path = $this->path . 's';
     }
 
-    public final function execute(array $vars, int $id = null): array | object
+    public final function execute(): array | object
     {
-        return Model::getInstance()->getAll($this->getResource());
+        return new JsonResponse(Model::getInstance()->getAll($this->getResource()));
     }
 }

@@ -23,7 +23,7 @@ abstract class ResourceEndpoint
         return $this->protected;
     }
 
-    public function execute(array $vars, int $id = null): array | object {
+    public function execute(): array | object {
         return [];
     }
 

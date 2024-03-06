@@ -15,13 +15,13 @@ class ApiResource
 
     private array $resourceEndpoints = [];
 
-    public function __construct()
+    public function __construct(int $id)
     {
     }
 
     public final function buildEndpoints(string $resourceName): void
     {
-        $resourceName = strtolower($resourceName) . 's';
+        $resourceName = strtolower($resourceName);
         $this->resourceEndpoints = [
             'GET' => [
                 new Get(resource: $resourceName),

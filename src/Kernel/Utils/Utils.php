@@ -20,6 +20,14 @@ abstract class Utils
         return str_replace("/$projectDirName", '', $uri);
     }
 
+    public static function getResourceIdentifier(): string
+    {
+        $urn = self::getUrn();
+        $urn = explode('/', $urn);
+        return $urn[1];
+    }
+
+
     public static function getRequestedMethod(): string
     {
         return $_SERVER['REQUEST_METHOD'];
@@ -29,5 +37,7 @@ abstract class Utils
     {
         return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
     }
+
+
 
 }

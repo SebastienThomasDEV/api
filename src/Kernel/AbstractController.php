@@ -17,18 +17,16 @@ abstract class AbstractController
      * @param array $vars
      * @return void
      */
-    public final function send(array $vars): void
+    public final function send(array $vars): JsonResponse
     {
         try {
-            $response = new JsonResponse($vars, 200);
-            $response->send();
+            return new JsonResponse($vars, 200);
         } catch (\Exception $e) {
             $vars = [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode()
             ];
-            $response = new JsonResponse($vars, 500);
-            $response->send();
+            return new JsonResponse($vars, 500);
         }
     }
 

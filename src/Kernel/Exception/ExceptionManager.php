@@ -7,15 +7,13 @@ use Mvc\Framework\Kernel\Http\JsonResponse;
 class ExceptionManager
 {
 
-    public static function send(\Throwable $e): void
+    public static function send(\Throwable $e): JsonResponse
     {
         $vars = [
             'message' => $e->getMessage(),
             'code' => $e->getCode()
         ];
-        $response = new JsonResponse($vars, 500);
-        $response->send();
-        exit();
+        return new JsonResponse($vars, 500);
     }
 
 }
