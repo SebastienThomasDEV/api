@@ -17,8 +17,12 @@ class Delete extends ResourceEndpoint
 
     public final function execute(int $id = null): array | object
     {
-        Model::getInstance()->delete($this->getResource(), $id);
-        return new JsonResponse(['message' => 'Resource deleted successfully!', 'id' => $id]);
+        try {
+            Model::getInstance()->delete($this->getResource(), $id);
+            return new JsonResponse(['message' => 'Resource deleted successfully!', 'id' => $id]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Resource not found!'], 404);
+        }
     }
 
 }

@@ -6,7 +6,7 @@ namespace Mvc\Framework\App\Entity;
 
 use Mvc\Framework\Kernel\Attributes\ApiResource;
 
-#[ApiResource]
+#[ApiResource('User')]
 class User
 {
     private int $id;

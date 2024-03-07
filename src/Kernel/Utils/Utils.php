@@ -33,9 +33,22 @@ abstract class Utils
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    public static function sanitize(string $input): string
+    public static function sanitizeData(array $data): array
     {
-        return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        $sanitizedData = [];
+        foreach ($data as $key => $value) {
+            $value = trim($value);
+            $value = stripslashes($value);
+            $value = htmlspecialchars($value);
+            $sanitizedData[$key] = $value;
+        }
+        return $sanitizedData;
+    }
+
+    public static function getRequestBody(): array
+    {
+        $requestBody = file_get_contents('php://input');
+        return json_decode($requestBody, true);
     }
 
 

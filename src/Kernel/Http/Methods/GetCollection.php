@@ -18,6 +18,10 @@ class GetCollection extends ResourceEndpoint
 
     public final function execute(): array | object
     {
-        return new JsonResponse(Model::getInstance()->getAll($this->getResource()));
+        try {
+            return new JsonResponse(Model::getInstance()->getAll($this->getResource()));
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Resource not found!'], 404);
+        }
     }
 }

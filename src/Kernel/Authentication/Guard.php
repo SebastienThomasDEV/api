@@ -7,7 +7,7 @@ use Mvc\Framework\App\Repository\UtilisateurRepository;
 class Guard {
     public static function check(): bool
     {
-        // TODO: Implement check() method.
+        // TODO: Implement check() method it should return a boolean if the token is valid or not
         $token = self::getToken();
         return false;
     }

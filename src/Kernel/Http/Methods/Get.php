@@ -16,6 +16,10 @@ class Get extends ResourceEndpoint
 
     public final function execute(int $id = null): array | object
     {
-        return new JsonResponse(Model::getInstance()->get($this->getResource(), $id));
+        try {
+            return new JsonResponse(Model::getInstance()->get($this->getResource(), $id));
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Resource not found!'], 404);
+        }
     }
 }

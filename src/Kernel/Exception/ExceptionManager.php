@@ -9,11 +9,18 @@ class ExceptionManager
 
     public static function send(\Throwable $e): JsonResponse
     {
-        $vars = [
-            'message' => $e->getMessage(),
-            'code' => $e->getCode()
-        ];
-        return new JsonResponse($vars, 500);
+        if ($_ENV["APP_ENV"] === "DEV") {
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace()
+            ], 500);
+        } else {
+            return new JsonResponse([
+                'message' => 'An error occurred while processing your request. Please try again later.'
+            ], 500);
+        }
     }
 
 }

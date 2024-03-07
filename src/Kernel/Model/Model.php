@@ -2,6 +2,7 @@
 
 namespace Mvc\Framework\Kernel\Model;
 
+use Mvc\Framework\Kernel\Exception\ExceptionManager;
 use \PDO;
 
 class Model
@@ -21,7 +22,7 @@ class Model
             $this->pdo->exec("SET CHARACTER SET utf8");
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
-            echo 'Connexion échouée avec la basse de donné : ' . $e->getMessage();
+            ExceptionManager::send($e);
         }
     }
 
@@ -47,7 +48,7 @@ class Model
         return $query->fetchAll(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
     }
 
-    public final function create(string $table, array $data): void
+    public final function post(string $table, array $data): void
     {
         $columns = implode(', ', array_keys($data));
         $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
@@ -55,7 +56,7 @@ class Model
         $query->execute($data);
     }
 
-    public final function update(string $table, int $id, array $data): void
+    public final function put(string $table, int $id, array $data): void
     {
         $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
         $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");

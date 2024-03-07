@@ -3,6 +3,7 @@
 namespace Mvc\Framework\Kernel\Attributes;
 
 
+use Mvc\Framework\Kernel\Http\Methods\Patch;
 use Mvc\Framework\Kernel\Http\Methods\Delete;
 use Mvc\Framework\Kernel\Http\Methods\Get;
 use Mvc\Framework\Kernel\Http\Methods\GetCollection;
@@ -15,8 +16,12 @@ class ApiResource
 
     private array $resourceEndpoints = [];
 
-    public function __construct(int $id)
+    public function __construct(
+        private string $resourceName
+    )
     {
+        $this->resourceName = strtolower($this->resourceName);
+        $this->buildEndpoints($this->resourceName);
     }
 
     public final function buildEndpoints(string $resourceName): void
@@ -30,6 +35,7 @@ class ApiResource
             'POST' => new Post(resource: $resourceName),
             'PUT' => new Put(resource: $resourceName),
             'DELETE' => new Delete(resource: $resourceName),
+            'PATCH' => new Patch(resource: $resourceName)
         ];
     }
 

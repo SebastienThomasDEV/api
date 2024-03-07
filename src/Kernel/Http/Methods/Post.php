@@ -5,6 +5,7 @@ namespace Mvc\Framework\Kernel\Http\Methods;
 use Mvc\Framework\Kernel\Http\JsonResponse;
 use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
+use Mvc\Framework\Kernel\Utils\Utils;
 
 class Post extends ResourceEndpoint
 {
@@ -17,7 +18,12 @@ class Post extends ResourceEndpoint
 
     public final function execute(array $vars = null, int $id = null): array | object
     {
-        Model::getInstance()->delete($this->getResource(), $id);
-        return new JsonResponse(['message' => 'Resource created successfully!', 'id' => $id]);
+        try {
+            $sanitizedData = Utils::sanitizeData($vars);
+            Model::getInstance()->post($this->getResource(), $sanitizedData);
+            return new JsonResponse(['message' => 'Resource created successfully!']);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => 'Resource could not be created!'], 500);
+        }
     }
 }

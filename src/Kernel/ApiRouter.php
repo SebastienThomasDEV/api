@@ -151,9 +151,8 @@ abstract class ApiRouter
                         // je vérifie si l'attribut de ma classe est de type ApiResource
                         if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\ApiResource') {
                             // si c'est le cas, je crée une instance de mon attribut ApiResource
+                            // dans son constructeur, je vais appeler la méthode buildEndpoints pour générer les routes de l'API associées à mon entité
                             $resource = $attribute->newInstance();
-                            // j'appelle la méthode buildEndpoints de ma resource pour générer les routes de l'API associées à mon entité
-                            $resource->buildEndpoints($className);
                             // je stocke les routes de l'API associées à mon entité dans mon tableau de resources qui me servira plus tard
                             // je bouclerais sur ce tableau pour rediriger la requête de l'utilisateur vers l'endpoint correspondant
                             self::$resources[$className] = $resource->getResourceEndpoints();
@@ -208,24 +207,28 @@ abstract class ApiRouter
         }
         if (!$endpointFound) {
             foreach (self::$resources as $resource) {
-                if ($resource[Utils::getRequestedMethod()]) {
-                    if (is_array($resource[Utils::getRequestedMethod()])) {
-                        foreach ($resource[Utils::getRequestedMethod()] as $endpoint) {
-                            $identifier = explode('/', Utils::getUrn())[2];
-                            if (is_numeric($identifier)) {
-                                $path = str_replace('{id}', $identifier, $endpoint->getPath());
-                                if ($path === Utils::getUrn()) {
-                                   $endpoint->execute((int)$identifier);
-                                }
-                            }
-                        }
-                    } else if ($resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn()) {
-                        dd($resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn());
-                        $resource[Utils::getRequestedMethod()]->execute();
-                    } else {
-                        ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
-                    }
-                }
+//                if ($resource[Utils::getRequestedMethod()]) {
+//                    if (is_array($resource[Utils::getRequestedMethod()])) {
+//                        foreach ($resource[Utils::getRequestedMethod()] as $endpoint) {
+//                            $identifier = explode('/', Utils::getUrn())[2];
+//                            if (is_numeric($identifier)) {
+//                                $path = str_replace('{id}', $identifier, $endpoint->getPath());
+//                                if ($path === Utils::getUrn()) {
+//                                   $endpoint->execute((int)$identifier);
+//                                }
+//                            } else {
+//                                if ($endpoint->getPath() === Utils::getUrn()) {
+//                                    $endpoint->execute();
+//                                }
+//                            }
+//                        }
+//                    } else if ($resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn()) {
+//                        $body = Utils::getRequestBody();
+//                        $resource[Utils::getRequestedMethod()]->execute($body);
+//                    } else {
+//                        ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
+//                    }
+//                }
             }
             ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
         } else {

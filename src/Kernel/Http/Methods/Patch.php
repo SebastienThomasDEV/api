@@ -7,7 +7,7 @@ use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 use Mvc\Framework\Kernel\Utils\Utils;
 
-class Put extends ResourceEndpoint
+class Patch extends ResourceEndpoint
 {
 
     public function __construct(string $resource, bool $protected = false)
@@ -20,10 +20,11 @@ class Put extends ResourceEndpoint
     {
         try {
             $sanitizedData = Utils::sanitizeData($vars);
-            Model::getInstance()->put($this->getResource(), $id, $sanitizedData);
-            return new JsonResponse(['message' => 'Resource put successfully!', 'id' => $id]);
+            Model::getInstance()->patch($this->getResource(), $id, $sanitizedData);
+            return new JsonResponse(['message' => 'Resource patched successfully!', 'id' => $id]);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Resource not found!'], 404);
         }
     }
+
 }

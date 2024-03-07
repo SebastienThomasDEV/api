@@ -14,9 +14,11 @@ class Endpoint
     public function __construct(
         private readonly string $path,
         private readonly string $name,
-        private readonly string $requestMethod =  'GET',
-        private readonly bool $protected = false
-    ){}
+        private string          $requestMethod = 'GET',
+        private readonly bool   $protected = false
+    )
+    {
+    }
 
     public final function getPath(): string
     {
@@ -59,11 +61,13 @@ class Endpoint
         $this->requestMethod = $requestMethod;
     }
 
-    public final function setParameter(string $parameter, string $value): void{
+    public final function setParameter(string $parameter, string $value): void
+    {
         $this->parameters[$parameter] = $value;
     }
 
-    public final function getParameter(string $parameter): string {
+    public final function getParameter(string $parameter): string
+    {
         return $this->parameters[$parameter];
     }
 
@@ -75,9 +79,9 @@ class Endpoint
         return $this->parameters;
     }
 
-public function isProtected() : bool
-{
-    return $this->protected;
-}
+    public function isProtected(): bool
+    {
+        return $this->protected;
+    }
 
 }
