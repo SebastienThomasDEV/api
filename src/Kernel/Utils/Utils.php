@@ -28,7 +28,7 @@ abstract class Utils
     }
 
 
-    public static function getRequestIdentifier(): string | null
+    public static function getRequestIdentifier(): int | null
     {
         $urn = self::getUrn();
         $urn = explode('/', $urn);

@@ -203,14 +203,17 @@ abstract class ApiRouter
         }
         if (!$endpointFound) {
             foreach (self::$resources as $resource) {
-                dd(Utils::getUrn(), $resource[Utils::getRequestedMethod()]->getPath());
-                    //TODO : checker la précense d'un id en querystring
-                if ($resource[Utils::getRequestedMethod()] && $resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn()) {
-                    $identifier = Utils::getRequestIdentifier();
-                    if (is_numeric($identifier)) {
-                        $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
-                    } else {
-                        $resource[Utils::getRequestedMethod()]->execute();
+                if ($identifier = Utils::getRequestIdentifier()) {
+                    if ($resource[Utils::getRequestedMethod()] && is_numeric($identifier)) {
+                        if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath().'/'.$identifier) {
+                            $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
+                        }
+                    }
+                } else {
+                    if ($resource[Utils::getRequestedMethod()]) {
+                        if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath()) {
+                            $resource[Utils::getRequestedMethod()]->execute();
+                        }
                     }
                 }
             }
