@@ -2,54 +2,55 @@
 
 namespace Mvc\Framework\Kernel\Services;
 
+use Mvc\Framework\Kernel\Utils\Utils;
+
 class Request
 {
 
     private array $get;
     private array $post;
+    private array $identifier;
 
 
     public function __construct()
     {
-        $this->detectRequestBody();
         $this->get = $_GET;
-        $this->post = json_decode(file_get_contents('php://input'), true) ?: [];
+        $this->post = Utils::getRequestBody();
     }
 
-    public static function createFromGlobals(): self
-    {
-        return new self();
-    }
-
-    public final function retrieveGetValue(string $key, mixed $default = null): mixed
-    {
-        return $this->get[$key] ?? $default;
-    }
-
-    public final function retrievePostValue(string $key, mixed $default = null): mixed
-    {
-        return $this->post[$key] ?? $default;
-    }
-
-    public final function retrieveAllGetValues(): array
+    /**
+     * @return array
+     */
+    public function getGetValues(): array
     {
         return $this->get;
     }
 
-    public final function retrieveAllPostValues(): array
+    /**
+     * @return array
+     */
+    public function getPostValues(): array
     {
         return $this->post;
     }
 
-    private function detectRequestBody(): void
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getGetValue(string $key): mixed
     {
-        $rawInput = fopen('php://input', 'r');
-        $tempStream = fopen('php://temp', 'r+');
-        stream_copy_to_stream($rawInput, $tempStream);
-        rewind($tempStream);
+        return $this->get[$key];
     }
 
-
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getPostValue(string $key): mixed
+    {
+        return $this->post[$key];
+    }
 
 
 }

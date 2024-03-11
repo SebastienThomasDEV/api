@@ -28,6 +28,14 @@ abstract class Utils
     }
 
 
+    public static function getRequestIdentifier(): string | null
+    {
+        $urn = self::getUrn();
+        $urn = explode('/', $urn);
+        return $urn[2] ?? null;
+    }
+
+
     public static function getRequestedMethod(): string
     {
         return $_SERVER['REQUEST_METHOD'];
@@ -45,10 +53,14 @@ abstract class Utils
         return $sanitizedData;
     }
 
-    public static function getRequestBody(): array
+    public static function getRequestBody(): array | null
     {
+        $rawInput = fopen('php://input', 'r');
+        $tempStream = fopen('php://temp', 'r+');
+        stream_copy_to_stream($rawInput, $tempStream);
+        rewind($tempStream);
         $requestBody = file_get_contents('php://input');
-        return json_decode($requestBody, true);
+        return json_decode($requestBody, true) ?? [];
     }
 
 

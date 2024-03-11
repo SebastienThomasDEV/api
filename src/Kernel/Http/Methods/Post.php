@@ -7,17 +7,17 @@ use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 use Mvc\Framework\Kernel\Utils\Utils;
 
-class Post extends ResourceEndpoint
+readonly class Post extends ResourceEndpoint
 {
 
-    public function __construct(string $resource, bool $protected = false)
+    public function __construct(string $resource)
     {
-        parent::__construct($resource, $protected);
-        $this->path = $this->path . 's';
+        parent::__construct($resource);
     }
 
-    public final function execute(array $vars = null, int $id = null): array | object
+    public final function execute(): array | object
     {
+        $vars = Utils::getRequestBody();
         try {
             $sanitizedData = Utils::sanitizeData($vars);
             Model::getInstance()->post($this->getResource(), $sanitizedData);

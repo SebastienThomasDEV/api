@@ -2,35 +2,20 @@
 
 namespace Mvc\Framework\Kernel\Utils;
 
-abstract class ResourceEndpoint
+abstract readonly class ResourceEndpoint
 {
-    protected string $path = '/';
+    protected string $path;
     public function __construct(
         private readonly string $resource,
-        private readonly bool $protected = false
     ){
-        $this->path = $this->path . $this->resource;
+        $this->path = '/'. strtolower($this->resource) . 's';
     }
-
     public final function getResource(): string
     {
         return $this->resource;
     }
+    abstract public function execute(): array | object;
 
-
-    public final function isProtected(): bool
-    {
-        return $this->protected;
-    }
-
-    public function execute(): array | object {
-        return [];
-    }
-
-    public final function getPath(): string
-    {
-        return $this->path;
-    }
 
 
 

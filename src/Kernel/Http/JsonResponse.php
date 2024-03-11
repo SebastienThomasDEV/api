@@ -9,7 +9,7 @@ namespace Mvc\Framework\Kernel\Http;
 // on utilise la fonction header pour définir l'en-tête de la réponse
 // on utilise la fonction print pour envoyer les données au client
 // on utilise la fonction json_encode pour convertir les données en JSON
-class JsonResponse
+readonly class JsonResponse
 {
     public function __construct(private array|object $data = [], private int $status = 200)
     {

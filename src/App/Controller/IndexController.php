@@ -9,20 +9,12 @@ use Mvc\Framework\Kernel\Services\Serializer;
 
 class IndexController extends AbstractController
 {
-    #[Endpoint(path: '/', name: 'index', requestMethod: 'GET')]
-    public function home(Serializer $serializer, Request $request)
+    #[Endpoint(path: '/', requestMethod: 'GET')]
+    public function home(Request $request)
     {
+        dd($request);
         $this->send([
             'message' => 'Welcome to the simplefony APrfdsfdsI'
         ]);
-    }
-
-    #[Endpoint(path: '/test', name: 'index', requestMethod: 'GET')]
-    public function create(Request $request)
-    {
-        $this->send([
-            'message' => 'Welcome to the simplefony APqzdI'
-        ]);
-
     }
 }

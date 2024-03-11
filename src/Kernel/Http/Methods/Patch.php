@@ -7,18 +7,18 @@ use Mvc\Framework\Kernel\Model\Model;
 use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
 use Mvc\Framework\Kernel\Utils\Utils;
 
-class Patch extends ResourceEndpoint
+readonly class Patch extends ResourceEndpoint
 {
 
-    public function __construct(string $resource, bool $protected = false)
+    public function __construct(string $resource)
     {
-        parent::__construct($resource, $protected);
-        $this->path .= 's/{id}';
+        parent::__construct($resource);
     }
 
-    public final function execute(array $vars = null, int $id = null): array | object
+    public final function execute(int $id = null): array | object
     {
         try {
+            $vars = Utils::getRequestBody();
             $sanitizedData = Utils::sanitizeData($vars);
             Model::getInstance()->patch($this->getResource(), $id, $sanitizedData);
             return new JsonResponse(['message' => 'Resource patched successfully!', 'id' => $id]);

@@ -207,28 +207,14 @@ abstract class ApiRouter
         }
         if (!$endpointFound) {
             foreach (self::$resources as $resource) {
-//                if ($resource[Utils::getRequestedMethod()]) {
-//                    if (is_array($resource[Utils::getRequestedMethod()])) {
-//                        foreach ($resource[Utils::getRequestedMethod()] as $endpoint) {
-//                            $identifier = explode('/', Utils::getUrn())[2];
-//                            if (is_numeric($identifier)) {
-//                                $path = str_replace('{id}', $identifier, $endpoint->getPath());
-//                                if ($path === Utils::getUrn()) {
-//                                   $endpoint->execute((int)$identifier);
-//                                }
-//                            } else {
-//                                if ($endpoint->getPath() === Utils::getUrn()) {
-//                                    $endpoint->execute();
-//                                }
-//                            }
-//                        }
-//                    } else if ($resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn()) {
-//                        $body = Utils::getRequestBody();
-//                        $resource[Utils::getRequestedMethod()]->execute($body);
-//                    } else {
-//                        ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
-//                    }
-//                }
+                if ($resource[Utils::getRequestedMethod()]) {
+                    $identifier = Utils::getRequestIdentifier();
+                    if (is_numeric($identifier) && !$identifier) {
+                        $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
+                    } else {
+                        $resource[Utils::getRequestedMethod()]->execute();
+                    }
+                }
             }
             ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
         } else {

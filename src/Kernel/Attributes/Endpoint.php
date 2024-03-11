@@ -13,7 +13,6 @@ class Endpoint
 
     public function __construct(
         private readonly string $path,
-        private readonly string $name,
         private string          $requestMethod = 'GET',
         private readonly bool   $protected = false
     )
