@@ -1,10 +1,10 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Http\Methods;
+namespace Api\Framework\Kernel\Http\Methods;
 
-use Mvc\Framework\Kernel\Http\JsonResponse;
-use Mvc\Framework\Kernel\Model\Model;
-use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
+use Api\Framework\Kernel\Http\JsonResponse;
+use Api\Framework\Kernel\Model\Model;
+use Api\Framework\Kernel\Utils\ResourceEndpoint;
 
 readonly class Get extends ResourceEndpoint
 {
@@ -17,13 +17,13 @@ readonly class Get extends ResourceEndpoint
     {
         if ($id) {
             try {
-                return Model::getInstance()->get($this->getResource(), $id);
+                return new JsonResponse(Model::getInstance()->get($this->getResource(), $id), 200);
             } catch (\Exception $e) {
                 return new JsonResponse(['message' => 'Resource not found!'], 404);
             }
         } else {
             try {
-                return Model::getInstance()->getAll($this->getResource());
+                return new JsonResponse(Model::getInstance()->getAll($this->getResource()), 200);
             } catch (\Exception $e) {
                 return new JsonResponse(['message' => 'Resource not found!'], 404);
             }

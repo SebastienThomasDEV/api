@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Utils;
+namespace Api\Framework\Kernel\Utils;
 
 abstract class Utils
 {

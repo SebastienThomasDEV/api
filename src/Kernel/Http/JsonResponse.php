@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Http;
+namespace Api\Framework\Kernel\Http;
 
 
 // Cette classe est utilisée pour envoyer une réponse JSON au client.

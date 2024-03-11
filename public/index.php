@@ -12,8 +12,8 @@
 // sans avoir à les inclure une par une dans nos fichiers
 // on peut donc utiliser les classes de notre application sans se soucier de leur emplacement
 include_once(dirname(__DIR__).'/vendor/autoload.php');
-use Mvc\Framework\Kernel\Kernel;
-use Mvc\Framework\Kernel\Exception\ExceptionManager;
+use Api\Framework\Kernel\Kernel;
+use Api\Framework\Kernel\Exception\ExceptionManager;
 
 // on instancie notre classe Kernel qui est le point d'entrée de notre application MVC
 // c'est lui qui va charger les variables d'environnement et les routes de notre application puis traite la requête de l'utilisateur

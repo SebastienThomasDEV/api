@@ -1,8 +1,8 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Model;
+namespace Api\Framework\Kernel\Model;
 
-use Mvc\Framework\Kernel\Exception\ExceptionManager;
+use Api\Framework\Kernel\Exception\ExceptionManager;
 use \PDO;
 
 class Model
@@ -34,48 +34,83 @@ class Model
         return self::$instance;
     }
 
-    public final function get(string $table, int $id): object
+    public final function get(string $table, int $id): array | object
     {
-        $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id LIMIT 1");
-        $query->execute(['id' => $id]);
-        return $query->fetchAll(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table))[0];
+        try {
+            $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id LIMIT 1");
+            $query->execute(['id' => $id]);
+            return $query->fetchAll(PDO::FETCH_ASSOC)[0];
+        } catch (\PDOException $e) {
+           return ExceptionManager::send($e);
+        }
     }
 
-    public final function getAll(string $table): array
+    public final function getAll(string $table): array | object
     {
-        $query = $this->pdo->prepare("SELECT * FROM $table");
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_CLASS, 'Mvc\\Framework\\App\\Entity\\' . ucfirst($table));
+        try {
+            $query = $this->pdo->prepare("SELECT * FROM $table");
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return ExceptionManager::send($e);
+        }
     }
 
     public final function post(string $table, array $data): void
     {
-        $columns = implode(', ', array_keys($data));
-        $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
-        $query = $this->pdo->prepare("INSERT INTO $table ($columns) VALUES ($values)");
-        $query->execute($data);
+        try {
+            $columns = implode(', ', array_keys($data));
+            $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
+            $query = $this->pdo->prepare("INSERT INTO $table ($columns) VALUES ($values)");
+            $query->execute($data);
+        } catch (\PDOException $e) {
+            ExceptionManager::send($e);
+        }
+
     }
 
     public final function put(string $table, int $id, array $data): void
     {
-        $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
-        $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
-        $query->execute(array_merge($data, ['id' => $id]));
+        try {
+            $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
+            $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
+            $query->execute(array_merge($data, ['id' => $id]));
+        } catch (\PDOException $e) {
+            ExceptionManager::send($e);
+        }
     }
 
     public final function delete(string $table, int $id): void
     {
-        $query = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
-        $query->execute(['id' => $id]);
+        try {
+            $query = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
+            $query->execute(['id' => $id]);
+        } catch (\PDOException $e) {
+            ExceptionManager::send($e);
+        }
     }
 
     public final function patch(string $table, int $id, array $data): void
     {
-        $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
-        $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
-        $query->execute(array_merge($data, ['id' => $id]));
+        try {
+            $set = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
+            $query = $this->pdo->prepare("UPDATE $table SET $set WHERE id = :id");
+            $query->execute(array_merge($data, ['id' => $id]));
+        } catch (\PDOException $e) {
+            ExceptionManager::send($e);
+        }
     }
 
+    public final function query(string $query, array $data = null): array | object
+    {
+        try {
+            $query = $this->pdo->prepare($query);
+            $query->execute($data);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return ExceptionManager::send($e);
+        }
+    }
 
 
 }

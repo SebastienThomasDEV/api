@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Attributes;
+namespace Api\Framework\Kernel\Attributes;
 
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_CLASS)]
 class Endpoint

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Utils;
+namespace Api\Framework\Kernel\Utils;
 
 abstract readonly class ResourceEndpoint
 {
@@ -13,6 +13,11 @@ abstract readonly class ResourceEndpoint
     public final function getResource(): string
     {
         return $this->resource;
+    }
+
+    public final function getPath(): string
+    {
+        return $this->path;
     }
     abstract public function execute(): array | object;
 

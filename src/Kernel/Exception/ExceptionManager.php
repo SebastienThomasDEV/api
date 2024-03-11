@@ -1,8 +1,8 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Exception;
+namespace Api\Framework\Kernel\Exception;
 
-use Mvc\Framework\Kernel\Http\JsonResponse;
+use Api\Framework\Kernel\Http\JsonResponse;
 
 class ExceptionManager
 {
@@ -16,9 +16,13 @@ class ExceptionManager
                 'line' => $e->getLine(),
                 'trace' => $e->getTrace()
             ], 500);
-        } else {
+        } else if ($_ENV["APP_ENV"] === "PROD") {
             return new JsonResponse([
                 'message' => 'An error occurred while processing your request. Please try again later.'
+            ], 500);
+        } else {
+            return new JsonResponse([
+                'message' => 'APP_ENV is not set. Please set APP_ENV to DEV or PROD.'
             ], 500);
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel;
+namespace Api\Framework\Kernel;
 
 // on inclut la classe Dotenv pour charger les variables d'environnement qui est une dépendance
 // installer via composer dans notre application
@@ -65,6 +65,10 @@ class Kernel
     {
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../'); // on créé une instance de la classe Dotenv
         $dotenv->load(); // on charge les variables d'environnement du fichier .env dans la superglobale $_ENV
+        $_ENV['NAMESPACE'] = str_replace('\\'.basename(__NAMESPACE__), '', __NAMESPACE__);
+        if ($_ENV['NAMESPACE'] === __NAMESPACE__) {
+            $_ENV['NAMESPACE'] = str_replace('/' . basename(__NAMESPACE__), '', __NAMESPACE__);
+        }
     }
 
 

@@ -1,10 +1,9 @@
 <?php
 
-namespace Mvc\Framework\Kernel;
+namespace Api\Framework\Kernel;
 
-use Mvc\Framework\Kernel\Authentication\Guard;
-use Mvc\Framework\Kernel\Exception\ExceptionManager;
-use Mvc\Framework\Kernel\Utils\Utils;
+use Api\Framework\Kernel\Exception\ExceptionManager;
+use Api\Framework\Kernel\Utils\Utils;
 
 
 // Cette classe est un routeur qui permet de gérer les requêtes entrantes dans notre application
@@ -33,6 +32,8 @@ abstract class ApiRouter
     // en gros lire la signature de la classe et comment elle est construite
     public static function registerControllerEndpoints(): void
     {
+
+        $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Controller de mon application pour lire les fichiers qu'il contient (les contrôleurs)
         // avec la fonction opendir de PHP qui permet d'ouvrir un dossier
         $dir = opendir(__DIR__ . '/../../src/App/Controller');
@@ -52,7 +53,7 @@ abstract class ApiRouter
                 // je concatène le namespace de mon controller avec le nom de la classe
                 // car je veux instancier ma classe avec son namespace complet (Mvc\Framework\App\Controller\XxxController)
                 // ce namespace complet est nécessaire pour instancier ma classe avec la classe ReflectionClass
-                $file_path = 'Mvc\\Framework\\App\\Controller\\' . $file_path;
+                $file_path = $namespace . '\\App\\Controller\\' . $file_path;
                 // j'essaye d'instancier ma classe avec la classe ReflectionClass
                 // et j'encadre cette instruction avec un bloc try/catch
                 try {
@@ -85,9 +86,14 @@ abstract class ApiRouter
                         // car de base, je ne sais pas si ma méthode contient un attribut de type Endpoint
                         foreach ($attributes as $attribute) {
                             // je vérifie si l'attribut de ma méthode est de type Endpoint
-                            if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\Endpoint') {
+                            if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\Endpoint') {
                                 // si c'est le cas, je crée une instance de mon attribut Endpoint
                                 $endpoint = $attribute->newInstance();
+                                foreach (self::$controllerEndpoints as $alreadyRegisteredEndpoint) {
+                                    if ($endpoint->getPath() === $alreadyRegisteredEndpoint->getPath()) {
+                                        ExceptionManager::send(new \Exception('Endpoint mismatch, probably a duplicate', 500));
+                                    }
+                                }
                                 // j'associe le chemin de mon controller à mon endpoint pour pouvoir le retrouver plus tard
                                 $endpoint->setController($file_path);
                                 // j'associe la méthode de mon controller à mon endpoint pour pouvoir l'appeler plus tard
@@ -100,6 +106,8 @@ abstract class ApiRouter
                                     if (!Utils::isPrimitiveFromString($parameter->getType())) {
                                         // si c'est le cas, je stocke le nom du paramètre et son type dans mon endpoint
                                         $endpoint->setParameter($parameter->getName(), $parameter->getType());
+                                    } else {
+                                        ExceptionManager::send(new \Exception('A non-object type parameter has been found, try to replace by an service', 500));
                                     }
                                 }
                                 // Pour finir, je stocke mon endpoint dans mon tableau de endpoints
@@ -131,6 +139,7 @@ abstract class ApiRouter
     // exemple: si on a une entité Utilisateur, on va générer les routes de l'API pour cette entité (GET /utilisateurs, POST /utilisateurs, etc.)
     public static function registerResourceEndpoints(): void
     {
+        $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Entity de mon application pour lire les fichiers qu'il contient (les entités)
         $dir = opendir(__DIR__ . '/../../src/App/Entity');
         // je fait une boucle "tant que" pour parcourir les fichiers du dossier Entity
@@ -140,7 +149,7 @@ abstract class ApiRouter
                 // je remplace l'extension .php de mon fichier par une chaine vide
                 $className = str_replace('.php', '', $file_path);
                 // je concatène le namespace de mon entity avec le nom de la classe
-                $file_path = 'Mvc\\Framework\\App\\Entity\\' . $className;
+                $file_path = $namespace . '\\App\\Entity\\' . $className;
                 try {
                     // en utilisant le namespace complet de ma classe, je crée une instance de la classe ReflectionClass
                     $class = new \ReflectionClass($file_path);
@@ -149,7 +158,7 @@ abstract class ApiRouter
                     // je boucle sur les attributs de ma classe pour récupérer les attributs de type ApiResource
                     foreach ($attributes as $attribute) {
                         // je vérifie si l'attribut de ma classe est de type ApiResource
-                        if ($attribute->getName() === 'Mvc\\Framework\\Kernel\\Attributes\\ApiResource') {
+                        if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\ApiResource') {
                             // si c'est le cas, je crée une instance de mon attribut ApiResource
                             // dans son constructeur, je vais appeler la méthode buildEndpoints pour générer les routes de l'API associées à mon entité
                             $resource = $attribute->newInstance();
@@ -183,20 +192,7 @@ abstract class ApiRouter
                 // je vérifie si la méthode de mon endpoint correspond à la méthode de la requête de l'utilisateur
                 if ($endpoint->getRequestMethod() === Utils::getRequestedMethod()) {
                     // je vérifie si mon endpoint est protégé par un token
-                    if ($endpoint->isProtected()) {
-                        // si c'est le cas, je vérifie si le token de l'utilisateur est valide
-                        // via la classe Guard qui est une classe qui permet de gérer l'authentification de notre application
-                        if (Guard::check()) {
-                            // si le token est valide, je stocke mon endpoint dans ma variable
-                            $endpointFound = $endpoint;
-                        } else {
-                            // si le token n'est pas valide, j'envoie une exception pour signaler que l'accès est non autorisé
-                            ExceptionManager::send(new \Exception('Unauthorized access, invalid token', 401));
-                        }
-                    } else {
-                        // si mon endpoint n'est pas protégé par un token, je stocke mon endpoint dans ma variable
-                        $endpointFound = $endpoint;
-                    }
+                    $endpointFound = $endpoint;
                 } else {
                     // si la méthode de la requête de l'utilisateur ne correspond pas à la méthode de mon endpoint
                     // exemple: si l'utilisateur demande /utilisateurs avec la méthode POST, mais mon endpoint est en GET
@@ -207,16 +203,18 @@ abstract class ApiRouter
         }
         if (!$endpointFound) {
             foreach (self::$resources as $resource) {
-                if ($resource[Utils::getRequestedMethod()]) {
+                dd(Utils::getUrn(), $resource[Utils::getRequestedMethod()]->getPath());
+                    //TODO : checker la précense d'un id en querystring
+                if ($resource[Utils::getRequestedMethod()] && $resource[Utils::getRequestedMethod()]->getPath() === Utils::getUrn()) {
                     $identifier = Utils::getRequestIdentifier();
-                    if (is_numeric($identifier) && !$identifier) {
+                    if (is_numeric($identifier)) {
                         $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
                     } else {
                         $resource[Utils::getRequestedMethod()]->execute();
                     }
                 }
             }
-            ExceptionManager::send(new \Exception('Endpoint not found in your project, it does match with the requested path', 404));
+            ExceptionManager::send(new \Exception('API endpoint not found', 404));
         } else {
             // si je trouve l'endpoint correspondant à la requête de l'utilisateur
             if (class_exists($endpointFound->getController())) {
@@ -250,6 +248,5 @@ abstract class ApiRouter
             }
         }
     }
-
 
 }

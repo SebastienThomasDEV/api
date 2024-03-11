@@ -1,8 +1,9 @@
 <?php
 
-namespace Mvc\Framework\Kernel;
+namespace Api\Framework\Kernel;
 
-use Mvc\Framework\Kernel\Model\Model;
+use Api\Framework\Kernel\Model\Model;
+use Api\Framework\Kernel\Utils\Serializer;
 
 
 // Cette classe est une classe abstraite qui permet de factoriser le code des classes Repository de l'application.
@@ -34,11 +35,68 @@ abstract class AbstractRepository
         $this->entity = strtolower(substr($repositoryName, 0, strpos($repositoryName, 'Repository')));
     }
 
+    public final function save(object $entity): void
+    {
+        if (!is_null($entity->getId())) {
+            $class = new \ReflectionClass($entity);
+            $properties = $class->getProperties();
+            $data = [];
+            foreach ($properties as $property) {
+                $property->setAccessible(true);
+                $data[$property->getName()] = $property->getValue($entity);
+            }
+            $sql = "UPDATE " . $this->entity . " SET ";
+            foreach ($data as $key => $value) {
+                if ($key === 'id') continue;
+                $sql .= $key . " = :" . $key . ", ";
+            }
+            $sql = substr($sql, 0, -2);
+            $sql .= " WHERE id = :id";
+            Model::getInstance()->query($sql, $data);
+        } else {
+            $class = new \ReflectionClass($entity);
+            $properties = $class->getProperties();
+            $data = [];
+            foreach ($properties as $property) {
+                if ($property->getName() === 'id') continue;
+                $property->setAccessible(true);
+                $data[$property->getName()] = $property->getValue($entity);
+            }
+            $sql = "INSERT INTO " . $this->entity . " (" . implode(',', array_keys($data)) . ") VALUES (:" . implode(',:', array_keys($data)) . ")";
+            Model::getInstance()->query($sql, $data);
+        }
+    }
 
+    public final function findById(int $id): object
+    {
+        $sql = "SELECT * FROM " . $this->entity . " WHERE id = :id";
+        return Serializer::serialize(Model::getInstance()->query($sql, ['id' => $id])[0], ucfirst($this->entity));
+    }
 
+    public final function findAll(): array
+    {
+        $sql = "SELECT * FROM " . $this->entity;
+        return Model::getInstance()->query($sql);
+    }
 
+    public final function findBy(array $criteria): array
+    {
+        $sql = "SELECT * FROM " . $this->entity . " WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= $key . " = :" . $key . " AND ";
+        }
+        $sql = substr($sql, 0, -5);
+        return Serializer::serializeAll(Model::getInstance()->query($sql, $criteria), ucfirst($this->entity));
+    }
 
-
-
+    public final function findOneBy(array $criteria): object
+    {
+        $sql = "SELECT * FROM " . $this->entity . " WHERE ";
+        foreach ($criteria as $key => $value) {
+            $sql .= $key . " = :" . $key . " AND ";
+        }
+        $sql = substr($sql, 0, -5);
+        return Serializer::serialize(Model::getInstance()->query($sql, $criteria), ucfirst($this->entity));
+    }
 
 }
