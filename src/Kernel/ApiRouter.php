@@ -158,15 +158,17 @@ abstract class ApiRouter
                     // je récupère les attributs de ma classe
                     $attributes = $class->getAttributes();
                     // je boucle sur les attributs de ma classe pour récupérer les attributs de type ApiResource
-                    foreach ($attributes as $attribute) {
-                        // je vérifie si l'attribut de ma classe est de type ApiResource
-                        if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\ApiResource') {
-                            // si c'est le cas, je crée une instance de mon attribut ApiResource
-                            // dans son constructeur, je vais appeler la méthode buildEndpoints pour générer les routes de l'API associées à mon entité
-                            $resource = $attribute->newInstance();
-                            // je stocke les routes de l'API associées à mon entité dans mon tableau de resources qui me servira plus tard
-                            // je bouclerais sur ce tableau pour rediriger la requête de l'utilisateur vers l'endpoint correspondant
-                            self::$resources[$className] = $resource->getResourceEndpoints();
+                    if (count($attributes) > 0) {
+                        foreach ($attributes as $attribute) {
+                            // je vérifie si l'attribut de ma classe est de type ApiResource
+                            if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\ApiResource') {
+                                // si c'est le cas, je crée une instance de mon attribut ApiResource
+                                // dans son constructeur, je vais appeler la méthode buildEndpoints pour générer les routes de l'API associées à mon entité
+                                $resource = $attribute->newInstance();
+                                // je stocke les routes de l'API associées à mon entité dans mon tableau de resources qui me servira plus tard
+                                // je bouclerais sur ce tableau pour rediriger la requête de l'utilisateur vers l'endpoint correspondant
+                                self::$resources[$className] = $resource->getResourceEndpoints();
+                            }
                         }
                     }
                 } catch (\ReflectionException $e) {
@@ -204,23 +206,25 @@ abstract class ApiRouter
             }
         }
         if (!$endpointFound) {
-            foreach (self::$resources as $resource) {
-                if ($identifier = Utils::getRequestIdentifier()) {
-                    if ($resource[Utils::getRequestedMethod()] && is_numeric($identifier)) {
-                        if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath().'/'.$identifier) {
-                            $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
-                        } else {
-                            ExceptionManager::send(new \Exception('API endpoint not found', 404));
+            if (count(self::$resources) > 0) {
+                foreach (self::$resources as $resource) {
+                    if ($identifier = Utils::getRequestIdentifier()) {
+                        if ($resource[Utils::getRequestedMethod()] && is_numeric($identifier)) {
+                            if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath() . '/' . $identifier) {
+                                $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
+                            } else {
+                                ExceptionManager::send(new \Exception('API endpoint not found', 404));
+                            }
                         }
-                    }
-                } else if ($resource[Utils::getRequestedMethod()]) {
+                    } else if ($resource[Utils::getRequestedMethod()]) {
                         if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath()) {
                             $resource[Utils::getRequestedMethod()]->execute();
                         } else {
                             ExceptionManager::send(new \Exception('API endpoint not found', 404));
                         }
-                } else {
-                    ExceptionManager::send(new \Exception('API endpoint not found', 404));
+                    } else {
+                        ExceptionManager::send(new \Exception('API endpoint not found', 404));
+                    }
                 }
             }
             ExceptionManager::send(new \Exception('API endpoint not found', 404));
@@ -250,7 +254,7 @@ abstract class ApiRouter
                         // cela me permet de passer les services associés à ma méthode dynamiquement
                         // et pouvoir les utiliser dans ma méthode
                         $controller->$method(...$services);
-                    }
+                    } 
                 } catch (\ReflectionException $e) {
                     ExceptionManager::send(new \Exception($e->getMessage(), $e->getCode()));
                 }

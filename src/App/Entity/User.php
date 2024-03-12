@@ -3,11 +3,7 @@
 namespace Api\Framework\App\Entity;
 
 use Api\Framework\Kernel\Attributes\ApiResource;
-use Api\Framework\Kernel\Http\Methods\Get;
-
-#[ApiResource('user',
-get: new Get()
-)]
+#[ApiResource('user')]
 class User
 {
     private ?int $id = null;
