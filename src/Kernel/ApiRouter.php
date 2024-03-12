@@ -53,7 +53,7 @@ abstract class ApiRouter
                 // je concatène le namespace de mon controller avec le nom de la classe
                 // car je veux instancier ma classe avec son namespace complet (Mvc\Framework\App\Controller\XxxController)
                 // ce namespace complet est nécessaire pour instancier ma classe avec la classe ReflectionClass
-                $file_path = $namespace . '\\App\\Controller\\' . $file_path;
+                $file_path = $namespace . '\\App\\Controller\\'.$file_path;
                 // j'essaye d'instancier ma classe avec la classe ReflectionClass
                 // et j'encadre cette instruction avec un bloc try/catch
                 try {
@@ -89,8 +89,10 @@ abstract class ApiRouter
                             if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\Endpoint') {
                                 // si c'est le cas, je crée une instance de mon attribut Endpoint
                                 $endpoint = $attribute->newInstance();
+                                // boucle sur les resources pour qu'il n'y est pas de conflits de noms
                                 foreach (self::$controllerEndpoints as $alreadyRegisteredEndpoint) {
                                     if ($endpoint->getPath() === $alreadyRegisteredEndpoint->getPath()) {
+                                        // cette methode arrête l'éxecution
                                         ExceptionManager::send(new \Exception('Endpoint mismatch, probably a duplicate', 500));
                                     }
                                 }

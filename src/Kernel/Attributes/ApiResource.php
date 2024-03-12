@@ -16,15 +16,20 @@ class ApiResource
     private array $resourceEndpoints = [];
 
     public function __construct(
-        private readonly string $resourceName
+        private readonly string $resourceName,
+        private readonly ?Get $get = null,
+        private readonly ?Put $put = null,
+        private readonly ?Post $post = null,
+        private readonly ?Patch $patch = null,
+        private readonly ?Delete $delete = null
     )
     {
         $this->resourceEndpoints = [
-            'GET' => new Get($resourceName),
-            'POST' => new Post($resourceName),
-            'PUT' => new Put($resourceName),
-            'PATCH' => new Patch($resourceName),
-            'DELETE' => new Delete($resourceName)
+            'GET'       => new Get($resourceName),
+            'POST'      => new Post($resourceName),
+            'PUT'       => new Put($resourceName),
+            'PATCH'     => new Patch($resourceName),
+            'DELETE'    => new Delete($resourceName)
         ];
     }
 
