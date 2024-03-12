@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel;
+namespace Api\Framework\Kernel;
 
 
 // Cette classe est un conteneur de services

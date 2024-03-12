@@ -1,10 +1,10 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Http\Methods;
+namespace Api\Framework\Kernel\Http\Methods;
 
-use Mvc\Framework\Kernel\Http\JsonResponse;
-use Mvc\Framework\Kernel\Model\Model;
-use Mvc\Framework\Kernel\Utils\ResourceEndpoint;
+use Api\Framework\Kernel\Http\JsonResponse;
+use Api\Framework\Kernel\Model\Model;
+use Api\Framework\Kernel\Utils\ResourceEndpoint;
 
 readonly class Delete extends ResourceEndpoint
 {

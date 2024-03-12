@@ -1,6 +1,6 @@
 <?php
 
-namespace Mvc\Framework\Kernel\Utils;
+namespace Api\Framework\Kernel\Utils;
 
 abstract class Utils
 {
@@ -28,7 +28,7 @@ abstract class Utils
     }
 
 
-    public static function getRequestIdentifier(): string | null
+    public static function getRequestIdentifier(): int | null
     {
         $urn = self::getUrn();
         $urn = explode('/', $urn);
