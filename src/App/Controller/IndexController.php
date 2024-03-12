@@ -13,26 +13,19 @@ use Api\Framework\Kernel\Services\Request;
 
 class IndexController extends AbstractController
 {
-    #[Endpoint(path: '/', requestMethod: 'POST')]
+
+    // On définit une route pour la méthode index
+    // On définit le chemin de la route
+    // On définit la méthode HTTP associée à la route
+    // On définit le nom de la méthode qui sera appelée pour répondre à la requête
+    // On peut aussi injecter des dépendances dans les paramètres de la méthode
+    #[Endpoint(path: '/', requestMethod: 'GET')]
     public function index(Request $request, UserRepository $userRepository, PasswordHasher $passwordHasher): JsonResponse
     {
-        $user = new User();
-        $user->setNom($request->retrievePostValue('nom'));
-        $user->setEmail($request->retrievePostValue('email'));
-        $user->setMdp($passwordHasher->hash($request->retrievePostValue('mdp')));
-        $user->setRoles($request->retrievePostValue('roles'));
-        $user->setPrenom($request->retrievePostValue('prenom'));
-        $userRepository->save($user);
-        return $this->send([
-            'message' => $user->getNom() . " a bien été enregistré"
-        ]);
-    }
 
-    #[Endpoint(path: '/qzd', requestMethod: 'GET')]
-    public function qzd(Request $request, UserRepository $userRepository, PasswordHasher $passwordHasher): JsonResponse
-    {
+        // on envoie une réponse JSON au client
         return $this->send([
-            'message' => "toto"
+            'message' => 'ok'
         ]);
     }
 }

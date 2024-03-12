@@ -207,14 +207,18 @@ abstract class ApiRouter
                     if ($resource[Utils::getRequestedMethod()] && is_numeric($identifier)) {
                         if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath().'/'.$identifier) {
                             $resource[Utils::getRequestedMethod()]->execute((int)$identifier);
+                        } else {
+                            ExceptionManager::send(new \Exception('API endpoint not found', 404));
                         }
                     }
-                } else {
-                    if ($resource[Utils::getRequestedMethod()]) {
+                } else if ($resource[Utils::getRequestedMethod()]) {
                         if (Utils::getUrn() === $resource[Utils::getRequestedMethod()]->getPath()) {
                             $resource[Utils::getRequestedMethod()]->execute();
+                        } else {
+                            ExceptionManager::send(new \Exception('API endpoint not found', 404));
                         }
-                    }
+                } else {
+                    ExceptionManager::send(new \Exception('API endpoint not found', 404));
                 }
             }
             ExceptionManager::send(new \Exception('API endpoint not found', 404));
