@@ -20,7 +20,7 @@ readonly class Post extends ResourceEndpoint
         $vars = Utils::getRequestBody();
         try {
             $sanitizedData = Utils::sanitizeData($vars);
-            Model::getInstance()->post($this->getResource(), $sanitizedData);
+            Model::getInstance()->post($this->getTable(), $sanitizedData);
             return new JsonResponse(['message' => 'Resource created successfully!']);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Resource could not be created!'], 500);

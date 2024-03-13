@@ -2,10 +2,12 @@
 
 namespace Api\Framework\Kernel\Services;
 
+use Api\Framework\Kernel\Abstract\AbstractService;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-class JwtManager
+
+class JwtManager extends AbstractService
 {
 
     static string $privateKey;
@@ -16,6 +18,7 @@ class JwtManager
         date_default_timezone_set('UTC');
         self::$privateKey = file_get_contents(__DIR__ . '/../../../config/jwt/private.pem');
         self::$publicKey = file_get_contents(__DIR__ . '/../../../config/jwt/public.pem');
+        parent::__construct(get_class($this));
     }
 
     public static function encode(array $data): string

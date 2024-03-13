@@ -2,8 +2,15 @@
 
 namespace Api\Framework\Kernel\Services;
 
-class PasswordHasher
+use Api\Framework\Kernel\Abstract\AbstractService;
+
+class PasswordHasher extends AbstractService
 {
+    public function __construct()
+    {
+        parent::__construct(get_class($this));
+    }
+
     public final function hash(string $password): string
     {
         return password_hash($password, PASSWORD_BCRYPT);

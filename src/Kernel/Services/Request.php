@@ -2,9 +2,10 @@
 
 namespace Api\Framework\Kernel\Services;
 
+use Api\Framework\Kernel\Abstract\AbstractService;
 use Api\Framework\Kernel\Utils\Utils;
 
-class Request
+class Request extends AbstractService
 {
 
     private array $get;
@@ -26,6 +27,7 @@ class Request
         } else {
             $this->bearerToken = '';
         }
+        parent::__construct(get_class($this));
     }
 
     /**

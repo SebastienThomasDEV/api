@@ -4,20 +4,32 @@ namespace Api\Framework\Kernel\Utils;
 
 abstract readonly class ResourceEndpoint
 {
-    protected string $path;
+
+    protected string $table;
     public function __construct(
-        private readonly string $resource,
+        private string $resource,
     ){
-        $this->path = '/'. strtolower($this->resource) . 's';
+        $this->table = substr($this->resource, 0, -1);
     }
     public final function getResource(): string
     {
         return $this->resource;
     }
 
-    public final function getPath(): string
+
+    public final function getOperationShortName(): string
     {
-        return $this->path;
+        $completeName = explode('\\', get_class($this));
+        return end($completeName);
+    }
+
+
+    /**
+     * @return string
+     */
+    public final function getTable(): string
+    {
+        return $this->table;
     }
     abstract public function execute(): array | object;
 

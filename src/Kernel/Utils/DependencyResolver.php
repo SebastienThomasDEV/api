@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Framework\Kernel;
+namespace Api\Framework\Kernel\Utils;
 
 
 // Cette classe est un conteneur de services

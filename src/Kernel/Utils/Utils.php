@@ -2,6 +2,8 @@
 
 namespace Api\Framework\Kernel\Utils;
 
+use Api\Framework\Kernel\Exception\ExceptionManager;
+
 abstract class Utils
 {
 
@@ -20,20 +22,6 @@ abstract class Utils
         return str_replace("/$projectDirName", '', $uri);
     }
 
-    public static function getResourceIdentifier(): string
-    {
-        $urn = self::getUrn();
-        $urn = explode('/', $urn);
-        return $urn[1];
-    }
-
-
-    public static function getRequestIdentifier(): int | null
-    {
-        $urn = self::getUrn();
-        $urn = explode('/', $urn);
-        return $urn[2] ?? null;
-    }
 
 
     public static function getRequestedMethod(): string
@@ -61,6 +49,22 @@ abstract class Utils
         rewind($tempStream);
         $requestBody = file_get_contents('php://input');
         return json_decode($requestBody, true) ?? [];
+    }
+
+    public static function getResourceIdentifierFromUrn(string $resource): int | null
+    {
+        $urn = self::getUrn();
+        $urn = explode('/', $urn);
+        $resourceIdentifier = array_search($resource, $urn);
+        if ($resourceIdentifier === false) {
+            return null;
+        } else {
+            // On vérifie si l'identifiant de la ressource est un nombre
+            // on doit caster la valeur en int pour s'assurer que c'est un nombre
+            // si ce n'est pas un nombre, on retourne null
+            // /!\ on doit vérifier que la valeur $urn[$resourceIdentifier + 1] castée en int est égale à 0
+            return (int) $urn[$resourceIdentifier + 1] === 0 ? null : (int) $urn[$resourceIdentifier + 1];
+        }
     }
 
 

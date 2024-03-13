@@ -20,7 +20,7 @@ readonly class Patch extends ResourceEndpoint
         try {
             $vars = Utils::getRequestBody();
             $sanitizedData = Utils::sanitizeData($vars);
-            Model::getInstance()->patch($this->getResource(), $id, $sanitizedData);
+            Model::getInstance()->patch($this->getTable(), $id, $sanitizedData);
             return new JsonResponse(['message' => 'Resource patched successfully!', 'id' => $id]);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Resource not found!'], 404);

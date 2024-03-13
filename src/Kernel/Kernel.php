@@ -4,6 +4,7 @@ namespace Api\Framework\Kernel;
 
 // on inclut la classe Dotenv pour charger les variables d'environnement qui est une dépendance
 // installer via composer dans notre application
+use Api\Framework\Kernel\Utils\Utils;
 use Dotenv\Dotenv;
 
 // la classe Kernel est un singleton, on ne peut donc pas l'instancier directement
@@ -93,7 +94,11 @@ class Kernel
     private function loadRequestedRoute(): void
     {
         try {
-            ApiRouter::loadEndpoint(); // on charge la route demandée par l'utilisateur
+            if (str_contains(Utils::getUrn(), 'resources')) {
+                ApiRouter::loadResourceEndPoint();
+            } else {
+                ApiRouter::loadControllerEndpoint();
+            }
         } catch (\Throwable $e) {
             Exception\ExceptionManager::send($e); // si une erreur survient, on l'envoie à notre gestionnaire d'exceptions
         }

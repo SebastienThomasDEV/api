@@ -3,6 +3,7 @@
 namespace Api\Framework\Kernel\Model;
 
 use Api\Framework\Kernel\Exception\ExceptionManager;
+use Api\Framework\Kernel\Http\JsonResponse;
 use \PDO;
 
 class Model
@@ -39,7 +40,7 @@ class Model
         try {
             $query = $this->pdo->prepare("SELECT * FROM $table WHERE id = :id LIMIT 1");
             $query->execute(['id' => $id]);
-            return $query->fetchAll(PDO::FETCH_ASSOC)[0];
+            return $query->fetchAll(PDO::FETCH_ASSOC)[0] ?? new JsonResponse(['message' => 'Resource not found for id=' . $id . " in table " . $table], 404);
         } catch (\PDOException $e) {
            return ExceptionManager::send($e);
         }
@@ -50,7 +51,7 @@ class Model
         try {
             $query = $this->pdo->prepare("SELECT * FROM $table");
             $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC);
+            return $query->fetchAll(PDO::FETCH_ASSOC) ?? new JsonResponse(['message' => 'Resource not found in table ' . $table], 404);
         } catch (\PDOException $e) {
             return ExceptionManager::send($e);
         }

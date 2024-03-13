@@ -17,13 +17,13 @@ readonly class Get extends ResourceEndpoint
     {
         if ($id) {
             try {
-                return new JsonResponse(Model::getInstance()->get($this->getResource(), $id), 200);
+                return new JsonResponse(Model::getInstance()->get($this->getTable(), $id), 200);
             } catch (\Exception $e) {
                 return new JsonResponse(['message' => 'Resource not found!'], 404);
             }
         } else {
             try {
-                return new JsonResponse(Model::getInstance()->getAll($this->getResource()), 200);
+                return new JsonResponse(Model::getInstance()->getAll($this->getTable()), 200);
             } catch (\Exception $e) {
                 return new JsonResponse(['message' => 'Resource not found!'], 404);
             }

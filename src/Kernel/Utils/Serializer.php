@@ -3,7 +3,7 @@
 namespace Api\Framework\Kernel\Utils;
 use Api\Framework\Kernel\Exception\ExceptionManager;
 
-class Serializer
+abstract class Serializer
 {
     public final static function serialize(mixed $data, string $class): object | null
     {

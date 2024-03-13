@@ -20,7 +20,7 @@ readonly class Put extends ResourceEndpoint
         $vars = Utils::getRequestBody();
         try {
             $sanitizedData = Utils::sanitizeData($vars);
-            Model::getInstance()->put($this->getResource(), $id, $sanitizedData);
+            Model::getInstance()->put($this->getTable(), $id, $sanitizedData);
             return new JsonResponse(['message' => 'Resource put successfully!', 'id' => $id]);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => 'Resource not found!'], 404);

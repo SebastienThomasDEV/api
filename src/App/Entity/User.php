@@ -3,14 +3,23 @@
 namespace Api\Framework\App\Entity;
 
 use Api\Framework\Kernel\Attributes\ApiResource;
+use Api\Framework\Kernel\Http\Operations;
 
-#[ApiResource('user')]
+#[ApiResource(
+    resource: 'users',
+    operations:
+    [
+        Operations::GET,
+        Operations::POST
+    ]
+)]
 class User
 {
     private ?int $id = null;
     private ?string $nom = null;
     private ?string $prenom = null;
     private ?array $roles = null;
+
 
     public function getId(): ?int
     {

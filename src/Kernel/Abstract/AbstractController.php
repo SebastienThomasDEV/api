@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Framework\Kernel;
+namespace Api\Framework\Kernel\Abstract;
 use Api\Framework\Kernel\Http\JsonResponse;
 
 
