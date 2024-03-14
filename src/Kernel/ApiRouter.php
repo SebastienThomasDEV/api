@@ -37,7 +37,13 @@ abstract class ApiRouter
         $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Controller de mon application pour lire les fichiers qu'il contient (les contrôleurs)
         // avec la fonction opendir de PHP qui permet d'ouvrir un dossier
-        $dir = opendir(__DIR__ . '/../../src/App/Controller');
+        $dir = opendir(
+            __DIR__ .
+            DIRECTORY_SEPARATOR .'..'.
+            DIRECTORY_SEPARATOR .'..'.
+            DIRECTORY_SEPARATOR .'src'.
+            DIRECTORY_SEPARATOR .'App'.
+            DIRECTORY_SEPARATOR .'Controller');
         // je fait une boucle "tant que" pour parcourir les fichiers du dossier Controller
         // grace à la fonction readdir de PHP qui permet de lire le contenu d'un dossier
         // donc tant que je peux lire un fichier, je le stocke dans la variable $file_path
@@ -54,7 +60,7 @@ abstract class ApiRouter
                 // je concatène le namespace de mon controller avec le nom de la classe
                 // car je veux instancier ma classe avec son namespace complet (Mvc\Framework\App\Controller\XxxController)
                 // ce namespace complet est nécessaire pour instancier ma classe avec la classe ReflectionClass
-                $file_path = $namespace . '\\App\\Controller\\' . $file_path;
+                $file_path = $namespace . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Controller' . DIRECTORY_SEPARATOR . $file_path;
                 // j'essaye d'instancier ma classe avec la classe ReflectionClass
                 // et j'encadre cette instruction avec un bloc try/catch
                 try {
@@ -144,7 +150,13 @@ abstract class ApiRouter
     {
         $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Entity de mon application pour lire les fichiers qu'il contient (les entités)
-        $dir = opendir(__DIR__ . '/../../src/App/Entity');
+        $dir = opendir(__DIR__
+            . DIRECTORY_SEPARATOR
+            .'..'. DIRECTORY_SEPARATOR
+            .'..'. DIRECTORY_SEPARATOR
+            .'src'. DIRECTORY_SEPARATOR
+            .'App'. DIRECTORY_SEPARATOR
+            .'Entity');
         // je fait une boucle "tant que" pour parcourir les fichiers du dossier Entity
         while ($file_path = readdir($dir)) {
             // Encore une fois, je vérifie si le fichier n'est pas un dossier (.) ou (..) car readdir lit aussi les dossiers
@@ -152,7 +164,7 @@ abstract class ApiRouter
                 // je remplace l'extension .php de mon fichier par une chaine vide
                 $className = str_replace('.php', '', $file_path);
                 // je concatène le namespace de mon entity avec le nom de la classe
-                $file_path = $namespace . '\\App\\Entity\\' . $className;
+                $file_path = $namespace . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Entity' . DIRECTORY_SEPARATOR . $className;
                 try {
                     // en utilisant le namespace complet de ma classe, je crée une instance de la classe ReflectionClass
                     $class = new \ReflectionClass($file_path);

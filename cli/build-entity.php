@@ -34,8 +34,8 @@ while (true) {
 clearScreen();
 $entityTemplate = createEntityTemplate($entityName, $properties);
 $repositoryTemplate = createRepositoryTemplate($entityName);
-fwrite(fopen("../src/App/Repository/". ucfirst($entityName)."Repository.php", "w"), $repositoryTemplate);
-fwrite(fopen("../src/App/Entity/". ucfirst($entityName).".php", "w"), $entityTemplate);
+fwrite(fopen("..". DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Repository" . DIRECTORY_SEPARATOR . ucfirst($entityName) . "Repository.php", "w"), $repositoryTemplate);
+fwrite(fopen("..". DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . ucfirst($entityName) . ".php", "w"), $entityTemplate);
 echo ucfirst($entityName) . " créé avec succès\n";
 
 

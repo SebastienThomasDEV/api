@@ -1,7 +1,7 @@
 <?php
 function checkIfEntityExists(string $entityName): bool
 {
-    return file_exists("../src/App/Entity/{$entityName}.php");
+    return file_exists(".." . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Entity" . DIRECTORY_SEPARATOR . ucfirst($entityName) . ".php");
 }
 
 
@@ -134,3 +134,6 @@ function getRepositoryTemplate(): string {
     EOT;
 }
 
+function getUserEntityTemplate() {
+
+}
