@@ -44,10 +44,6 @@ class Endpoint
         $this->controller = $controller;
     }
 
-    public final function getName(): string
-    {
-        return $this->name;
-    }
 
 
     public final function getRequestMethod(): string

@@ -8,7 +8,7 @@ abstract class Serializer
     public final static function serialize(mixed $data, string $class): object | null
     {
         try {
-            $class = new \ReflectionClass($_ENV["NAMESPACE"].'\\App\\Entity\\'. $class);
+            $class = new \ReflectionClass("Api\\Framework\\App\\Entity\\" . $class);
             $object = $class->newInstance();
             foreach ($data as $key => $value) {
                 if ($class->hasProperty($key)) {

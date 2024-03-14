@@ -33,8 +33,6 @@ abstract class ApiRouter
     // en gros lire la signature de la classe et comment elle est construite
     public static function registerControllerEndpoints(): void
     {
-
-        $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Controller de mon application pour lire les fichiers qu'il contient (les contrôleurs)
         // avec la fonction opendir de PHP qui permet d'ouvrir un dossier
         $dir = opendir(
@@ -60,7 +58,7 @@ abstract class ApiRouter
                 // je concatène le namespace de mon controller avec le nom de la classe
                 // car je veux instancier ma classe avec son namespace complet (Mvc\Framework\App\Controller\XxxController)
                 // ce namespace complet est nécessaire pour instancier ma classe avec la classe ReflectionClass
-                $file_path = $namespace . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Controller' . DIRECTORY_SEPARATOR . $file_path;
+                $file_path = "Api\\Framework\\App\\Controller\\" . $file_path;
                 // j'essaye d'instancier ma classe avec la classe ReflectionClass
                 // et j'encadre cette instruction avec un bloc try/catch
                 try {
@@ -93,7 +91,7 @@ abstract class ApiRouter
                         // car de base, je ne sais pas si ma méthode contient un attribut de type Endpoint
                         foreach ($attributes as $attribute) {
                             // je vérifie si l'attribut de ma méthode est de type Endpoint
-                            if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\Endpoint') {
+                            if ($attribute->getName() === 'Api\\Framework\\Kernel\\Attributes\\Endpoint') {
                                 // si c'est le cas, je crée une instance de mon attribut Endpoint
                                 $endpoint = $attribute->newInstance();
                                 // boucle sur les resources pour qu'il n'y est pas de conflits de noms
@@ -148,7 +146,6 @@ abstract class ApiRouter
     // exemple: si on a une entité Utilisateur, on va générer les routes de l'API pour cette entité (GET /utilisateurs, POST /utilisateurs, etc.)
     public static function registerResourceEndpoints(): void
     {
-        $namespace = $_ENV["NAMESPACE"];
         // j'ouvre le dossier Entity de mon application pour lire les fichiers qu'il contient (les entités)
         $dir = opendir(__DIR__
             . DIRECTORY_SEPARATOR
@@ -164,7 +161,7 @@ abstract class ApiRouter
                 // je remplace l'extension .php de mon fichier par une chaine vide
                 $className = str_replace('.php', '', $file_path);
                 // je concatène le namespace de mon entity avec le nom de la classe
-                $file_path = $namespace . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR . 'Entity' . DIRECTORY_SEPARATOR . $className;
+                $file_path = "Api\\Framework\\App\\Entity\\" . $className;
                 try {
                     // en utilisant le namespace complet de ma classe, je crée une instance de la classe ReflectionClass
                     $class = new \ReflectionClass($file_path);
@@ -174,7 +171,7 @@ abstract class ApiRouter
                     if (count($attributes) > 0) {
                         foreach ($attributes as $attribute) {
                             // je vérifie si l'attribut de ma classe est de type ApiResource
-                            if ($attribute->getName() === $namespace . '\\Kernel\\Attributes\\ApiResource') {
+                            if ($attribute->getName() === 'Api\\Framework\\Kernel\\Attributes\\ApiResource') {
                                 // si c'est le cas, je crée une instance de mon attribut ApiResource
                                 // dans son constructeur, je vais appeler la méthode buildEndpoints pour générer les routes de l'API associées à mon entité
                                 $resource = $attribute->newInstance();
