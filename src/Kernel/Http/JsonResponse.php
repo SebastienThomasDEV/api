@@ -11,7 +11,7 @@ namespace Api\Framework\Kernel\Http;
 // on utilise la fonction json_encode pour convertir les données en JSON
 use Api\Framework\Kernel\Utils\Serializer;
 
-readonly class JsonResponse
+class JsonResponse
 {
     public function __construct(private array $data = [], private int $status = 200)
     {

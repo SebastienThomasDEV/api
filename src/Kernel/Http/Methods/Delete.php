@@ -6,7 +6,7 @@ use Api\Framework\Kernel\Http\JsonResponse;
 use Api\Framework\Kernel\Model\Model;
 use Api\Framework\Kernel\Utils\ResourceEndpoint;
 
-readonly class Delete extends ResourceEndpoint
+class Delete extends ResourceEndpoint
 {
 
     public function __construct(string $resource)

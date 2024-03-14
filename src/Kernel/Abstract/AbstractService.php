@@ -5,7 +5,7 @@ namespace Api\Framework\Kernel\Abstract;
 abstract class AbstractService
 {
     public function __construct(
-        string $name
+        private string $name
     )
     {
     }

@@ -7,7 +7,7 @@ use Api\Framework\Kernel\Model\Model;
 use Api\Framework\Kernel\Utils\ResourceEndpoint;
 use Api\Framework\Kernel\Utils\Utils;
 
-readonly class Post extends ResourceEndpoint
+class Post extends ResourceEndpoint
 {
 
     public function __construct(string $resource)

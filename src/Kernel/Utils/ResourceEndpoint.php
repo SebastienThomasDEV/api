@@ -2,7 +2,7 @@
 
 namespace Api\Framework\Kernel\Utils;
 
-abstract readonly class ResourceEndpoint
+abstract class ResourceEndpoint
 {
 
     protected string $table;
