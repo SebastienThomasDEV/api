@@ -12,7 +12,7 @@ use Api\Framework\Kernel\Utils\Serializer;
 // dans son constructeur, elle récupère le nom de la classe Repository qui l'étend
 // elle extrait le nom de l'entité associée à la classe Repository
 // elle stocke ce nom dans une propriété privée
-readonly abstract class AbstractRepository
+abstract class AbstractRepository
 {
 
     // on déclare une propriété privée pour stocker le nom de l'entité associée à la classe Repository

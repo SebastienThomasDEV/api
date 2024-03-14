@@ -9,11 +9,15 @@ abstract class Serializer
     {
         try {
             $class = new \ReflectionClass($_ENV["NAMESPACE"].'\\App\\Entity\\'. $class);
-            $properties = $class->getProperties();
             $object = $class->newInstance();
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
-                $property->setValue($object, $data[$property->getName()]);
+            foreach ($data as $key => $value) {
+                if ($class->hasProperty($key)) {
+                    $property = $class->getProperty($key);
+                    $property->setAccessible(true);
+                    $property->setValue($object, $value);
+                } else {
+                    throw new \ReflectionException('Property ' . $key . ' not found in class ' . $class->getName());
+                }
             }
             return $object;
         } catch (\ReflectionException $e) {
@@ -21,11 +25,32 @@ abstract class Serializer
         }
     }
 
-    public final static function serializeAll(array $data, string $class): array
+    public final static function serializeAll(array $entities, string $class): array
     {
         $result = [];
-        foreach ($data as $item) {
-            $result[] = self::serialize($item, $class);
+        foreach ($entities as $entity) {
+            $result[] = self::serialize($entity, $class);
+        }
+        return $result;
+    }
+
+    public final static function unserialize(object $entity): array
+    {
+        $class = new \ReflectionClass($entity);
+        $properties = $class->getProperties();
+        $data = [];
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $data[$property->getName()] = $property->getValue($entity);
+        }
+        return $data;
+    }
+
+    public final static function unserializeAll(array $entities): array
+    {
+        $result = [];
+        foreach ($entities as $entity) {
+            $result[] = self::unserialize($entity);
         }
         return $result;
     }

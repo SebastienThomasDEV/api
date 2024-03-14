@@ -29,7 +29,7 @@ function getEntityTemplate(): string {
     namespace Api\Framework\App\Entity;
     use Api\Framework\Kernel\Attributes\ApiResource;
     
-    #[ApiResource('@table')]
+    #[ApiResource('@tables')]
     class @name
     {
         private ?int \$id = null;
@@ -107,5 +107,30 @@ function checkInput(string $input): bool
         return false;
     }
     return true;
+}
+
+
+function createRepositoryTemplate(string $entityName): string
+{
+    return str_replace(
+        ['@name', '@entity'],
+        [ucfirst($entityName), strtolower($entityName)],
+        getRepositoryTemplate()
+    );
+}
+
+function getRepositoryTemplate(): string {
+    return <<<EOT
+    <?php
+    
+    namespace Api\Framework\App\Repository;
+    
+    use Api\Framework\Kernel\Abstract\AbstractRepository;
+    
+    class @nameRepository extends AbstractRepository
+    {
+        // Ici, on peut écrire des méthodes spécifiques à la classe Repository de l'entité @entity
+    }
+    EOT;
 }
 

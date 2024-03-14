@@ -222,10 +222,14 @@ abstract class ApiRouter
                                 // cela me permet de passer les services associés à ma méthode dynamiquement
                                 // et pouvoir les utiliser dans ma méthode
                                 $controller->$method(...$services);
+                            } else {
+                                ExceptionManager::send(new \Exception('Controller method not found', 404));
                             }
                         } catch (\ReflectionException $e) {
                             ExceptionManager::send(new \Exception($e->getMessage(), $e->getCode()));
                         }
+                    } else {
+                        ExceptionManager::send(new \Exception('Controller not found', 404));
                     }
                 } else {
                     // si la méthode de la requête de l'utilisateur ne correspond pas à la méthode de mon endpoint
@@ -233,6 +237,11 @@ abstract class ApiRouter
                     // j'envoie une exception pour signaler que la méthode n'est pas autorisée
                     ExceptionManager::send(new \Exception('Method not allowed for this endpoint', 405));
                 }
+            } else {
+                // si le chemin de mon endpoint ne correspond pas à la requête de l'utilisateur
+                // exemple: si l'utilisateur demande /utilisateurs, mais mon endpoint est /utilisateurs/1
+                // j'envoie une exception pour signaler que l'endpoint n'a pas été trouvé
+                ExceptionManager::send(new \Exception('Endpoint not found', 404));
             }
         }
         ExceptionManager::send(new \Exception('API endpoint not found', 404));
@@ -242,15 +251,20 @@ abstract class ApiRouter
     {
         foreach (self::$resources as $resource) {
             if ($operation = $resource[Utils::getRequestedMethod()]) {
-                if ($id = Utils::getResourceIdentifierFromUrn($operation->getResource())) {
-                    $operation->execute($id);
+                if (str_contains(Utils::getUrn(), $operation->getResource())) {
+                    if ($id = Utils::getResourceIdentifierFromUrn($operation->getResource())) {
+                        $operation->execute($id);
+                    } else {
+                        $operation->execute();
+                    }
                 } else {
-                    $operation->execute();
+                    ExceptionManager::send(new \Exception('The resource endpoint does not match the requested resource', 404));
                 }
             } else {
-                ExceptionManager::send(new \Exception('Resource endpoint not found', 404));
+                ExceptionManager::send(new \Exception('Resource operation not found', 404));
             }
         }
+        ExceptionManager::send(new \Exception('Resource endpoint not found', 404));
     }
 
 }

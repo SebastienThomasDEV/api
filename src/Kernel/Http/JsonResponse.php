@@ -9,10 +9,19 @@ namespace Api\Framework\Kernel\Http;
 // on utilise la fonction header pour définir l'en-tête de la réponse
 // on utilise la fonction print pour envoyer les données au client
 // on utilise la fonction json_encode pour convertir les données en JSON
+use Api\Framework\Kernel\Utils\Serializer;
+
 readonly class JsonResponse
 {
-    public function __construct(private array|object $data = [], private int $status = 200)
+    public function __construct(private array $data = [], private int $status = 200)
     {
+        $data = $this->data;
+        // Need to check if any data is an object and convert it to an array
+        array_walk_recursive($data, function (&$value) {
+            if (is_object($value)) {
+                $value = Serializer::unserialize($value);
+            }
+        });
         http_response_code($this->status);
         header('Access-Control-Allow-Headers: Content-Type'); // on autorise le type de contenu de la requête
         header('Content-Type: application/json'); // on définit le type de contenu de la réponse
@@ -20,7 +29,7 @@ readonly class JsonResponse
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'); // on autorise les requêtes de type GET, POST, PUT, DELETE et OPTIONS
         header('Access-Control-Max-Age: 3600'); // on définit la durée de validité de la réponse en secondes
         header('Access-Control-Allow-Credentials: true'); // on autorise les requêtes avec des cookies
-        print json_encode($this->data); // on envoie les données au client
+        print json_encode($data); // on envoie les données au client
         exit();
     }
 

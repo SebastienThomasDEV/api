@@ -3,6 +3,7 @@
 namespace Api\Framework\App\Controller;
 
 
+use Api\Framework\App\Repository\UserRepository;
 use Api\Framework\Kernel\Abstract\AbstractController;
 use Api\Framework\Kernel\Attributes\Endpoint;
 use Api\Framework\Kernel\Http\JsonResponse;
@@ -10,13 +11,11 @@ use Api\Framework\Kernel\Http\JsonResponse;
 class IndexController extends AbstractController
 {
     #[Endpoint(path: '/', requestMethod: 'GET')]
-    public function index(): JsonResponse
+    public function index(UserRepository $userRepository): JsonResponse
     {
-
-        $test = "test";
+        $users = $userRepository->findAll();
         return $this->send([
-            'tutu' => $test,
-            'message' => "à vous de jouer"
+            'message' => $users
         ]);
     }
 }

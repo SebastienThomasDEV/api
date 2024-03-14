@@ -33,6 +33,8 @@ while (true) {
 }
 clearScreen();
 $entityTemplate = createEntityTemplate($entityName, $properties);
+$repositoryTemplate = createRepositoryTemplate($entityName);
+fwrite(fopen("../src/App/Repository/". ucfirst($entityName)."Repository.php", "w"), $repositoryTemplate);
 fwrite(fopen("../src/App/Entity/". ucfirst($entityName).".php", "w"), $entityTemplate);
 echo ucfirst($entityName) . " créé avec succès\n";
 

@@ -18,8 +18,10 @@ class User
     private ?int $id = null;
     private ?string $nom = null;
     private ?string $prenom = null;
-    private ?array $roles = null;
+    private ?string $roles = null;
 
+    private ?string $mdp = null;
+    private ?string $email = null;
 
     public function getId(): ?int
     {
@@ -36,7 +38,7 @@ class User
         return $this->prenom;
     }
 
-    public function getRoles(): ?array
+    public function getRoles(): ?string
     {
         return $this->roles;
     }
