@@ -37,11 +37,11 @@ abstract class ApiRouter
         // avec la fonction opendir de PHP qui permet d'ouvrir un dossier
         $dir = opendir(
             __DIR__ .
-            DIRECTORY_SEPARATOR .'..'.
-            DIRECTORY_SEPARATOR .'..'.
-            DIRECTORY_SEPARATOR .'src'.
-            DIRECTORY_SEPARATOR .'App'.
-            DIRECTORY_SEPARATOR .'Controller');
+            DIRECTORY_SEPARATOR . '..' .
+            DIRECTORY_SEPARATOR . '..' .
+            DIRECTORY_SEPARATOR . 'src' .
+            DIRECTORY_SEPARATOR . 'App' .
+            DIRECTORY_SEPARATOR . 'Controller');
         // je fait une boucle "tant que" pour parcourir les fichiers du dossier Controller
         // grace à la fonction readdir de PHP qui permet de lire le contenu d'un dossier
         // donc tant que je peux lire un fichier, je le stocke dans la variable $file_path
@@ -149,9 +149,9 @@ abstract class ApiRouter
         // j'ouvre le dossier Entity de mon application pour lire les fichiers qu'il contient (les entités)
         $dir = opendir(__DIR__
             . DIRECTORY_SEPARATOR
-            .'..'. DIRECTORY_SEPARATOR
-            .'..'. DIRECTORY_SEPARATOR
-            .'src'. DIRECTORY_SEPARATOR
+            . '..' . DIRECTORY_SEPARATOR
+            . '..' . DIRECTORY_SEPARATOR
+            . 'src' . DIRECTORY_SEPARATOR
             .'App'. DIRECTORY_SEPARATOR
             .'Entity');
         // je fait une boucle "tant que" pour parcourir les fichiers du dossier Entity

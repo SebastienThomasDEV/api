@@ -17,8 +17,8 @@ class JwtManager extends AbstractService
     public function __construct()
     {
         date_default_timezone_set('UTC');
-        self::$privateKey = file_get_contents(__DIR__ .DIRECTORY_SEPARATOR. '..' .DIRECTORY_SEPARATOR  .'..'.DIRECTORY_SEPARATOR  .'..'.DIRECTORY_SEPARATOR  .'config'.DIRECTORY_SEPARATOR  .'jwt'.DIRECTORY_SEPARATOR  .'private.pem');
-        self::$publicKey = file_get_contents(__DIR__. DIRECTORY_SEPARATOR .'..' . DIRECTORY_SEPARATOR .'..'.DIRECTORY_SEPARATOR  .'..'.DIRECTORY_SEPARATOR  .'config'.DIRECTORY_SEPARATOR  .'jwt'.DIRECTORY_SEPARATOR  .'public.pem');
+        self::$privateKey = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Kernel' . DIRECTORY_SEPARATOR . 'Config' .DIRECTORY_SEPARATOR  .'jwt'.DIRECTORY_SEPARATOR  .'private.pem');
+        self::$publicKey = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Kernel' . DIRECTORY_SEPARATOR . 'Config' .DIRECTORY_SEPARATOR  .'jwt'.DIRECTORY_SEPARATOR  .'public.pem');
         parent::__construct(get_class($this));
     }
 

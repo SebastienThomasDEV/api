@@ -64,7 +64,7 @@ class Kernel
     // ces variables sont stockées dans des paires clé/valeur et sont accessibles via la superglobale $_ENV
     private function loadEnv(): void
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . DIRECTORY_SEPARATOR .'..'. DIRECTORY_SEPARATOR . '..'); // on crée une instance de la classe Dotenv
+        $dotenv = Dotenv::createImmutable(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src'); // on crée une instance de la classe Dotenv
         $dotenv->load(); // on charge les variables d'environnement du fichier .env dans la superglobale $_ENV
         // je charge le namespace de mon application pour l'utiliser plus tard
     }

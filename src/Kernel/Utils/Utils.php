@@ -17,9 +17,13 @@ abstract class Utils
 
     public static function getUrn(): string
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $projectDirName = explode('/', $uri)[1];
-        return str_replace("/$projectDirName", '', $uri);
+        // get base name of uri use basename method
+        $uri = basename($_SERVER['REQUEST_URI']);
+        if (basename($uri) === 'public') {
+            return '/';
+        } else {
+            return "/$uri";
+        }
     }
 
 

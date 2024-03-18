@@ -11,7 +11,7 @@ use Api\Framework\Kernel\Services\JwtManager;
 
 class IndexController extends AbstractController
 {
-    #[Endpoint(path: '/', requestMethod: 'GET')]
+    #[Endpoint(path: '/test', requestMethod: 'GET')]
     public function index(UserRepository $userRepository): JsonResponse
     {
         return $this->send([

@@ -6,14 +6,14 @@
 #  RewriteBase /
 # if the request is a file, then redirect to the index.php
   RewriteCond %{REQUEST_FILENAME} -f
-  RewriteRule ^(.*)$ public/index.php [QSA,L]
+  RewriteRule ^(.*)$ index.php [QSA,L]
 
   # no, so we redirect to our front web controller
-  RewriteRule ^(.*)$ public/index.php [QSA,L]
+  RewriteRule ^(.*)$ index.php [QSA,L]
 
   # if the request is a directory, then redirect to the index.php except public directory
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteCond %{REQUEST_URI} !^/public/
-  RewriteRule ^(.*)$ public/index.php [QSA,L]
+  RewriteRule ^(.*)$ index.php [QSA,L]
 
 </IfModule>

@@ -11,7 +11,7 @@
 // il permet de charger toutes les classes de notre application
 // sans avoir à les inclure une par une dans nos fichiers
 // on peut donc utiliser les classes de notre application sans se soucier de leur emplacement
-include_once(dirname(__DIR__).'/vendor/autoload.php');
+include_once(dirname(__DIR__) . '/vendor/autoload.php');
 use Api\Framework\Kernel\Kernel;
 use Api\Framework\Kernel\Exception\ExceptionManager;
 // on instancie notre classe Kernel qui est le point d'entrée de notre application MVC
